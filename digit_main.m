@@ -29,13 +29,14 @@
 clc
 clear
 tic
-global y_global dy_global t_global global_position_reference 
+global y_global dy_global t_global global_position_reference digit_inertia
 tspan=[0 7];
 addpath('gen')
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
 % set the intitial condition.
 load initial_pose.mat
 x0=zeros(1,60);
+
 %x0(1:30) = joint_angle';
 
 
@@ -50,7 +51,10 @@ y_global=[];
 x0(3)=-a(3);
 dy_global=[];
 phi_global=[];
-
+load Digit_Links_Mass.mat
+load Digit_Links_Offset.mat
+digit_inertia.links_mass = mass_Digit_links;
+digit_inertia.links_offset = offset_Digit_links;
 %% set the Bezier curve coefficient, this is used to parameterize the walking pattern.
 %{
 Alpha1_R_FD = linspace(-0.2,0.2,7);
@@ -74,6 +78,8 @@ Alpha = [Alpha_R_FD;Alpha_L_FD];
 %}
 LIP_para.H = 0.7;
 LIP_para.T = 0.8;
+[x_DRS,v_DRS,a_DRS] = dynamics.platform_motion(0,LIP_para.T);
+x0(31) = v_DRS(1);
 %H = 0.7;
 %%
 
@@ -163,7 +169,7 @@ for i=1:step
     end
     %%
     xe_vec(i,:)= xe(1:30)';
-    dq_plus=dynamics.resetmap(x_each_step(end,:),foot_index);
+    dq_plus=dynamics.resetmap(x_each_step(end,:),foot_index,LIP_para);
     x0=[x_each_step(end,1:30)';dq_plus];
     
     if foot_index==-1
@@ -180,7 +186,7 @@ for i=1:step
 end
 
 %% generate the animation
-floating_base_animation2(t,x_sol)
+floating_base_animation2(t,x_sol,0,'digit_full_actuation_DRS')
 %rmpath('gen')
 %% generate the tracking results
 figure

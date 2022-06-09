@@ -1,5 +1,6 @@
 function dx = dynamics(t,x,foot_index,Alpha,current_stance_foot_position,t_end_of_previous_step,LIP_para)
-
+    global t_global
+    t_global=[t_global;t+t_end_of_previous_step];
     %global Fr COP
     [D,c_vec,B] = dynamics.dynamic_matrix_digit(x,foot_index);
     q = x(1:30);
@@ -13,8 +14,8 @@ function dx = dynamics(t,x,foot_index,Alpha,current_stance_foot_position,t_end_o
         j_c = numeric_jacobian(@hol_ctr.left_holonomic_constraint,q);
         jj_c = hol_ctr.jacDotL(q,dq);
     end
-    
-    c_overall = c_vec-j_c'/(j_c/D*j_c')*(j_c/D*c_vec-jj_c);
+    [~,~,a_DRS] = dynamics.platform_motion(t_global(end),LIP_para.T);
+    c_overall = c_vec-j_c'/(j_c/D*j_c')*(j_c/D*c_vec-jj_c+a_DRS);
     B_overall = B-j_c'/(j_c/D*j_c')*j_c/D*B;
     %digit_left_foot_pose(q)
     %digit_right_foot_pose(q)
@@ -34,5 +35,5 @@ function dx = dynamics(t,x,foot_index,Alpha,current_stance_foot_position,t_end_o
     %p_y = F_r(4)/F_r(3);
     %p_x = -F_r(5)/F_r(3);
     %COP = [COP,[p_x;p_y]];
-    t;
+    t
 end

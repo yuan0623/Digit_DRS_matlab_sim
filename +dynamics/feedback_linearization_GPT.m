@@ -5,31 +5,41 @@ function [u]=feedback_linearization_GPT(t,x,D,c_overall,...
     dq=x(31:60);
     % compute hc and its derivative, check section III A
     if foot_index == -1
-        hc = output_GPT_func.hc_R_sup(q)-[zeros(14,1);current_stance_foot_position(1);zeros(5,1)];
+        hc = output_GPT_func.hc_R_sup(q);
         j_hc = output_GPT_func.j_hc_R_sup(q);
         jj_hc = output_GPT_func.jj_hc_R_sup(q,dq);
         Alpha_lower=Alpha(1,:);
+        support_foot = forward_kinematics.digit_right_foot_pose(q);
+        d_support_foot = numeric_jacobian(@forward_kinematics.digit_right_foot_pose,q)*dq;
     elseif foot_index == 1
-        hc = output_GPT_func.hc_L_sup(q)-[zeros(14,1);current_stance_foot_position(1);zeros(5,1)];
+        hc = output_GPT_func.hc_L_sup(q);
         j_hc=output_GPT_func.j_hc_L_sup(q);
         jj_hc = output_GPT_func.jj_hc_L_sup(q,dq);
         Alpha_lower=Alpha(2,:);
+        support_foot = forward_kinematics.digit_left_foot_pose(q);
+        d_support_foot = numeric_jacobian(@forward_kinematics.digit_left_foot_pose,q)*dq;
     end
 
 
 
-    theta = q(1)-current_stance_foot_position(1)+ 0.0619;
-    dtheta = dq(1);
-    ds_dtheta=(Alpha_lower(28)-Alpha_lower(22));
-    s = (theta+(0.1))/(0.2)
-    ds_dtheta = 5;
+    %theta = q(1)-support_foot(1);
+    
+    %dtheta = dq(1)-d_support_foot(1);
+    %s = (theta+(0.1))/(0.2);
+    %ds_dtheta = 5;
+    theta = t;
+    dtheta = 1;
+    s = theta/0.7
+    ds_dtheta=0.7;
+    
+    
     %s=(2*theta-Alpha_lower(22))/ds_dtheta;
     
     
     %%%%%%%%  desired walking pattern  ----->
     is_GPT = true;
     [ph,dph,ddph]=dynamics.digit_new_Bezier_6th(Alpha_lower,s,is_GPT);
-    [torso_desired,dtorso_desired,ddtorso_desired]=desired_hip_trajectory(t,t_end_of_previous_step);
+    [torso_desired,dtorso_desired,ddtorso_desired]=desired_hip_trajectory(t);
     hd = [torso_desired;
             ph(1:4);
             zeros(4,1);
@@ -46,9 +56,7 @@ function [u]=feedback_linearization_GPT(t,x,D,c_overall,...
             zeros(4,1);
             zeros(4,1);
             ddph(5:10)*(dtheta/ds_dtheta)^2];
-    pphipq=[ddtorso_desired(1);ddtorso_desired(2);...
-            1/ds_dtheta*(ddph*1/ds_dtheta*dtheta^2);
-            zeros(8,1)];
+
         
 
     %%%%%%%%  desired walking pattern  -----|
@@ -64,7 +72,7 @@ function [u]=feedback_linearization_GPT(t,x,D,c_overall,...
     y=hc-hd;
     y_dot=j_hc*dq-dhd;
 
-    norm(y)
+    norm(y);
     norm(y_dot);
 
     % make sure that Kp = (Kd/2)^2
@@ -73,22 +81,22 @@ function [u]=feedback_linearization_GPT(t,x,D,c_overall,...
 
     v = -Kp*y-Kd*y_dot;
     % check equ. (15)
-    %u=(j_hc/(D)*B_overall)\(v+j_hc/(D)*c_overall-jj_hc+ddhd);
-    u=((j_hc-pphipq)/(D)*B_overall)\(v+(j_hc-pphipq)/(D)*c_overall-jj_hc+ddhd);
+    u=(j_hc/(D)*B_overall)\(v+j_hc/(D)*c_overall-jj_hc+ddhd);
+    %u=((j_hc-pphipq)/(D)*B_overall)\(v+(j_hc-pphipq)/(D)*c_overall-jj_hc+ddhd);
 end  
 
-function [torso_desired,dtorso_desired,ddtorso_desired]=desired_hip_trajectory(t,t_end_of_previous_step)
-    global t_global 
+function [torso_desired,dtorso_desired,ddtorso_desired]=desired_hip_trajectory(t)
+    %global t_global 
         
 
-    t_global=[t_global;t+t_end_of_previous_step];
+    
 
     %a=0.2*sin(pi/8);
     a=0.2;
     %b=-0.01;
-    b=0;
+    b=-0.5;
 
-    x_torso_desired = b+a*t_global(end);
+    x_torso_desired = b+a*t;
     y_torso_desired = 0;
     
     

@@ -1,7 +1,12 @@
-function floating_base_animation2(t,x)
+function floating_base_animation2(t,x,want_record,name)
     
     figure
     grid on
+    file_path=strcat('video/',name);
+    if want_record == 1
+        video_obj = VideoWriter(file_path);
+        open(video_obj)
+    end
     axis(gca,'equal')
     num_of_frame=length(t);
     ylim([-1 2]);
@@ -510,11 +515,18 @@ function floating_base_animation2(t,x)
 
         pause(0.0005); %use when not making a gif
         %        gif(); %save frame in the gif file
+        if want_record == 1
+            F= getframe(gcf);
+            writeVideo(video_obj,F)
+        end
 
         delete(leftLeg)
         delete(leftArm)
         delete(rightLeg)
         delete(rightArm)
+    end
+    if want_record == 1
+        close(video_obj)
     end
             %figure
             %plot(swing_foot_verticle_overall)
