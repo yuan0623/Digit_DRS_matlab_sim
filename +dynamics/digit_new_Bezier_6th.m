@@ -1,6 +1,4 @@
-function [ph,dph,ddph]=digit_new_Bezier_6th(Alpha,s,is_GPT) 
-
-
+function [ph,dph,ddph]=digit_new_Bezier_6th(Alpha,s) 
     S=[
         (1-s).^6
         6*s.*(1-s).^5
@@ -30,7 +28,7 @@ function [ph,dph,ddph]=digit_new_Bezier_6th(Alpha,s,is_GPT)
         - 120*s.^3*(s - 1) - 60*s.^4
         30*s.^4
         ];
-    %{
+
     a1=Alpha(1:7);                %torso z
     a2=Alpha(8:14);               %torso roll
     a3=Alpha(15:21);              %torso pitch
@@ -41,38 +39,9 @@ function [ph,dph,ddph]=digit_new_Bezier_6th(Alpha,s,is_GPT)
     a8=Alpha(50:56);              %swing roll
     a9=Alpha(57:63);              %swing pitch
     a10=Alpha(64:70);             %swing yaw
-    %}
-    if ~is_GPT
-        a1=Alpha(1:7);                %swing foot x
-        a2=Alpha(8:14);               %swing foot y
-        a3=Alpha(15:21);              %swing foot z
-        a4=Alpha(22:28);              %swing roll
-        a5=Alpha(29:35);              %swing pitch
-        a6=Alpha(36:42);              %swing yaw
-
-
-
-        ph = [a1;a2;a3;a4;a5;a6]*S;
-        dph = [a1;a2;a3;a4;a5;a6]*dS;
-        ddph = [a1;a2;a3;a4;a5;a6]*ddS;
-    else
-        a1=Alpha(1:7);                %torso z
-        a2=Alpha(8:14);               %torso roll
-        a3=Alpha(15:21);              %torso pitch
-        a4=Alpha(22:28);              %torso yaw
-        a5=Alpha(29:35);              %swing foot x
-        a6=Alpha(36:42);              %swing foot y
-        a7=Alpha(43:49);              %swing foot z
-        a8=Alpha(50:56);              %swing roll
-        a9=Alpha(57:63);              %swing pitch
-        a10=Alpha(64:70);             %swing yaw
-        ph = [a1;a2;a3;a4;a5;a6;a7;a8;a9;a10]*S;
-        dph = [a1;a2;a3;a4;a5;a6;a7;a8;a9;a10]*dS;
-        ddph = [a1;a2;a3;a4;a5;a6;a7;a8;a9;a10]*ddS;
-    end
-    
-    
-
+    ph = [a1;a2;a3;a4;a5;a6;a7;a8;a9;a10]*S;
+    dph = [a1;a2;a3;a4;a5;a6;a7;a8;a9;a10]*dS;
+    ddph = [a1;a2;a3;a4;a5;a6;a7;a8;a9;a10]*ddS;
 end
 %{
 

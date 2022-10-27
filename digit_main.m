@@ -29,78 +29,91 @@
 clc
 clear
 tic
-global y_global dy_global t_global global_position_reference digit_inertia
-tspan=[0 7];
+global y_global dy_global t_global global_position_reference Alpha t_LIP_global...
+    x0_LIP_sagittal_global x0_LIP_lateral_global x_global u_saittal_global u_lateral_global...
+    hc_global hd_global
+tspan=[0 0.95];
 addpath('gen')
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
 % set the intitial condition.
 load initial_pose.mat
-x0=zeros(1,60);
 
-%x0(1:30) = joint_angle';
-
-
-%Fr = [];
-%COP = zeros(2,1);
-
-%x0(3) = 0.2876;
+%%
+foot_index = 1;
+load digit_lateral_LIP.mat
+load digit_sagittal_LIP.mat
+LIP_para.sagittal_LIP = sagittal_LIP;
+LIP_para.lateral_LIP = lateral_LIP;
+%x0=Tool.LIP2DigitFullModel(LIP_para,foot_index);
+%Tool.visualize_IC(x0)
 %%  this is to make sure that the initial height of the support foot of the robot is 0.
-a=forward_kinematics.digit_left_foot_pose(x0(1:30));
-y_global=[];
 
-x0(3)=-a(3);
-dy_global=[];
-phi_global=[];
-load Digit_Links_Mass.mat
-load Digit_Links_Offset.mat
-digit_inertia.links_mass = mass_Digit_links;
-digit_inertia.links_offset = offset_Digit_links;
-%% set the Bezier curve coefficient, this is used to parameterize the walking pattern.
+
+
+%x0(31) = v_DRS(1);
+
 %{
-Alpha1_R_FD = linspace(-0.2,0.2,7);
-Alpha2_R_FD = [0.2 0.2 0.2 0.2 0.2 0.2 0.2];
-Alpha3_R_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.01];
-Alpha4_R_FD = [0,0,0,0,0,0,0];
-Alpha5_R_FD = [0,0,0,0,0,0,0];
-Alpha6_R_FD = [0,0,0,0,0,0,0];
-
-
-Alpha1_L_FD = linspace(-0.2,0.2,7);
-Alpha2_L_FD = -[0.2 0.2 0.2 0.2 0.2 0.2 0.2];
-Alpha3_L_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.01];
-Alpha4_L_FD = [0,0,0,0,0,0,0];
-Alpha5_L_FD = [0,0,0,0,0,0,0];
-Alpha6_L_FD = [0,0,0,0,0,0,0];
-
-Alpha_R_FD = [Alpha1_R_FD, Alpha2_R_FD, Alpha3_R_FD, Alpha4_R_FD, Alpha5_R_FD, Alpha6_R_FD];
-Alpha_L_FD = [Alpha1_L_FD, Alpha2_L_FD, Alpha3_L_FD, Alpha4_L_FD, Alpha5_L_FD, Alpha6_L_FD];
-Alpha = [Alpha_R_FD;Alpha_L_FD];
+x0(31:end)=[0.4975
+   -0.6605
+    0.7716
+   -0.9006
+    0.6282
+    0.3621
+    0.9540
+   -0.4309
+    0.7184
+    0.3852
+         0
+   -0.3852
+    1.6160
+    0.0924
+   -0.3671
+    0.4679
+   -0.2832
+    0.4434
+   -1.9245
+   -0.1905
+   -0.9559
+   -1.3952
+         0
+    1.3952
+   -1.4077
+   -1.2738
+    0.1486
+   -0.9011
+   -1.2788
+    0.6220]';
 %}
-LIP_para.H = 0.7;
-LIP_para.T = 0.8;
-[x_DRS,v_DRS,a_DRS] = dynamics.platform_motion(0,LIP_para.T);
-x0(31) = v_DRS(1);
 %H = 0.7;
 %%
+load x0
 
-Alpha1_R_FD = [0.7 0.7 0.7 0.7 0.7 0.7 0.7];
+if foot_index == -1
+    current_stance_foot_position=forward_kinematics.digit_right_foot_pose(x0(1:30));  %Right foot as stance foot
+    swing_foot = forward_kinematics.digit_left_foot_pose(x0(1:30));
+elseif foot_index == 1
+    current_stance_foot_position=forward_kinematics.digit_left_foot_pose(x0(1:30));  %Left foot as stance foot
+    swing_foot = forward_kinematics.digit_right_foot_pose(x0(1:30));
+end
+
+Alpha1_R_FD = [1 1 1 1 1 1 1]*lateral_LIP.H;
 Alpha2_R_FD = [0,0,0,0,0,0,0];
 Alpha3_R_FD = [0,0,0,0,0,0,0];
 Alpha4_R_FD = [0,0,0,0,0,0,0];
-Alpha5_R_FD = linspace(-0.2,0.2,7);
-Alpha6_R_FD = [0.2 0.2 0.2 0.2 0.2 0.2 0.2];
-Alpha7_R_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.01];
+Alpha5_R_FD = [swing_foot(1)-current_stance_foot_position(1),swing_foot(1),-0.06,0,0.06,0.08,0.25];
+Alpha6_R_FD = [swing_foot(2)-current_stance_foot_position(2),swing_foot(2),-0.06,0,0.06,0.08,0.25];
+Alpha7_R_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.001];
 Alpha8_R_FD = [0,0,0,0,0,0,0];
 Alpha9_R_FD = [0,0,0,0,0,0,0];
 Alpha10_R_FD = [0,0,0,0,0,0,0];
 
-Alpha1_L_FD = [0.7 0.7 0.7 0.7 0.7 0.7 0.7];
+Alpha1_L_FD = [1 1 1 1 1 1 1]*lateral_LIP.H;
 Alpha2_L_FD = [0,0,0,0,0,0,0];
 Alpha3_L_FD = [0,0,0,0,0,0,0];
 Alpha4_L_FD = [0,0,0,0,0,0,0];
-Alpha5_L_FD = linspace(-0.2,0.2,7);
-Alpha6_L_FD = -[0.2 0.2 0.2 0.2 0.2 0.2 0.2];
-Alpha7_L_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.01];
+Alpha5_L_FD = [swing_foot(1)-current_stance_foot_position(1),swing_foot(1),-0.06,0,0.06,0.08,0.25];
+Alpha6_L_FD = [swing_foot(2)-current_stance_foot_position(2),swing_foot(2),-0.06,0,0.06,0.08,0.25];
+Alpha7_L_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.001];
 Alpha8_L_FD = [0,0,0,0,0,0,0];
 Alpha9_L_FD = [0,0,0,0,0,0,0];
 Alpha10_L_FD = [0,0,0,0,0,0,0];
@@ -109,47 +122,38 @@ Alpha_R_FD = [Alpha1_R_FD, Alpha2_R_FD, Alpha3_R_FD, Alpha4_R_FD, Alpha5_R_FD, A
 Alpha_L_FD = [Alpha1_L_FD, Alpha2_L_FD, Alpha3_L_FD, Alpha4_L_FD, Alpha5_L_FD, Alpha6_L_FD, Alpha7_L_FD, Alpha8_L_FD, Alpha9_L_FD, Alpha10_L_FD];
 Alpha = [Alpha_R_FD;Alpha_L_FD];
 
-%{
-Alpha1 = 0.2217*ones(1,7);
-Alpha2 = [0,0.1,0.15,0.2,0.15,0.1,0];
-Alpha3 = zeros(1,7);
-Alpha4 = [0 0.005 0.008 0.01 0.008 0.005 0]*2;
-Alpha5 = zeros(1,7);
-Alpha6 = zeros(1,7);
-Alpha_r = [Alpha1,Alpha2,Alpha3,Alpha4,Alpha5,Alpha6];
-Alpha_l = Alpha_r;
-Alpha = [Alpha_r;Alpha_l];
-%}
+
 t=[];
 x_sol=[];
 
 
 t_global=[];
-
 global_position_reference=[];
 
+x0_LIP_sagittal_global = [];
+x0_LIP_lateral_global = [];
+t_LIP_global = [];
+x_global = [];
+u_saittal_global = [];
+u_lateral_global = [];
+hc_global = [];
+hd_global = []
 
-
-
-step=6;
+step=20;
 t_end_of_previous_step=0;
 
 t_interrupt=[];
-foot_index = -1;
+t_end_desired = 0;
 xe_vec = zeros(step,30);
 
-if foot_index == -1
-    current_stance_foot_position=forward_kinematics.digit_left_foot_pose(x0(1:30));  %Right foot as stance foot
-elseif foot_index == 1
-    current_stance_foot_position=forward_kinematics.digit_right_foot_pose(x0(1:30));  %Left foot as stance foot
-end
+
 %current_stance_foot_position(1)=0.0376;
 %% main loop
 for i=1:step
     options=odeset('Events',@(t,x) dynamics.switch_events(t,x,foot_index));
 
     [t_each_step,x_each_step,te,xe,ie]=ode45(@(t,x) dynamics.dynamics(t,x,...
-        foot_index,Alpha,current_stance_foot_position,t_end_of_previous_step,LIP_para),tspan,x0,options);
+        foot_index,current_stance_foot_position,t_end_of_previous_step,LIP_para,t_end_desired),tspan,x0,options);
  
     if isempty(t)
         
@@ -172,29 +176,39 @@ for i=1:step
     dq_plus=dynamics.resetmap(x_each_step(end,:),foot_index,LIP_para);
     x0=[x_each_step(end,1:30)';dq_plus];
     
+    t_end_desired = LIP_para.sagittal_LIP.T*i;
+    
     if foot_index==-1
-        current_stance_foot_position=forward_kinematics.digit_left_foot_pose(x0(1:30));
-        fprintf('heihei')
-    elseif foot_index == 1
         current_stance_foot_position=forward_kinematics.digit_right_foot_pose(x0(1:30));
+        fprintf('heihei')
+        foot_index = 1;
+        alpha_row_index = 2;
+        hc = output_func.hc_L_sup(x0(1:30));
+    elseif foot_index == 1
+        current_stance_foot_position=forward_kinematics.digit_left_foot_pose(x0(1:30));
         fprintf('xixi')
+        foot_index = -1;
+        alpha_row_index = 1;
+        hc = output_func.hc_R_sup(x0(1:30));
     end
+    Alpha(alpha_row_index,8) = hc(2);
+    Alpha(alpha_row_index,15) = hc(3);
+    Alpha(alpha_row_index,29) = hc(5);
+    Alpha(alpha_row_index,36) = hc(6);
     fprintf('hey,Ive finished %d step\n',i)
     stance_foot_position_overall_mat=[stance_foot_position_overall_mat;current_stance_foot_position'];
-    foot_index=(-1)^(i+1);
-
 end
 
 %% generate the animation
-floating_base_animation2(t,x_sol,0,'digit_full_actuation_DRS')
+floating_base_animation2(t_global,x_global',1,'digit_under_actuation')
 %rmpath('gen')
 %% generate the tracking results
 figure
 hold on
 plot(t,x_sol(:,1))
-plot(t_global,global_position_reference)
+%plot(t_global,global_position_reference)
 hold off
-legend('actual position', 'reference')
+%legend('actual position', 'reference')
 
 %figure
 %hold on
@@ -202,3 +216,16 @@ legend('actual position', 'reference')
 %plot(stance_foot_position_overall_mat(:,1),stance_foot_position_overall_mat(:,2),'o')
 %hold off
 
+%{
+lateral_LIP.H = lateral_LIP_v1.H;
+lateral_LIP.T = lateral_LIP_v1.T;
+lateral_LIP.Left.u_star = lateral_LIP_v1.Lu_star;
+lateral_LIP.Left.y_star = lateral_LIP_v1.Ly_star;
+lateral_LIP.Left.K = lateral_LIP_v1.LK;
+lateral_LIP.Left.y0 = lateral_LIP_v1.Ly0;
+
+lateral_LIP.Right.u_star = lateral_LIP_v1.Ru_star;
+lateral_LIP.Right.y_star = lateral_LIP_v1.Ry_star;
+lateral_LIP.Right.K = lateral_LIP_v1.RK;
+lateral_LIP.Right.y0 = lateral_LIP_v1.Ry0;
+%}

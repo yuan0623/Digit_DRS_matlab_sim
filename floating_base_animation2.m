@@ -4,14 +4,13 @@ function floating_base_animation2(t,x,want_record,name)
     grid on
     file_path=strcat('video/',name);
     if want_record == 1
-        video_obj = VideoWriter(file_path);
+        video_obj = VideoWriter(file_path,'MPEG-4');
         open(video_obj)
     end
     axis(gca,'equal')
     num_of_frame=length(t);
     ylim([-1 2]);
     
-
 %     gif('fourtDigitTest.gif','DelayTime',1/60); %add-on 'gif.m' by chad greene
     for i=1:1:num_of_frame
         q = x(i,1:30);
@@ -468,19 +467,7 @@ function floating_base_animation2(t,x,want_record,name)
         q30b = q30 * Tright_elbow2right_fist;
 
         figure(1)
-        view([0 0]);
-        grid on
-        axis equal
-        xlim([-2 2])
-        ylim([-2 2])
-        zlim([-2 2])
-        hold on
-        set(gca,'color','k')
-        set(gca,'xcolor','white')
-        set(gca,'ycolor','white')
-        set(gca,'zcolor','white')
-        % set(gcf,'color','#009ADC')
-        set(gcf,'color','black')
+        
         % for i = 7:30
         %     txt = "\leftarrow" + num2str(i);
         %     scatter3(eval("q" + num2str(i) + "(1,4)"),eval("q" + num2str(i) + "(2,4)"),eval("q" + num2str(i) + "(3,4)"),'red','filled');
@@ -496,20 +483,65 @@ function floating_base_animation2(t,x,want_record,name)
         % scatter3(q30b(1,4),q30b(2,4),q30b(3,4),'red','filled');
         % 
         % scatter3(Aw2b(1,4),Aw2b(2,4),Aw2b(3,4),'yellow','filled');
-
-        leftLeg = line([q7(1,4),q8(1,4),q9(1,4),q10(1,4),q11(1,4),q12(1,4),q13(1,4),q14(1,4)], ...
+        subplot(2,1,1)
+        view([0 0]);
+        grid on
+        axis equal
+        xlim([-2 2])
+        ylim([-2 2])
+        zlim([-2 2])
+        xlabel('x')
+        ylabel('y')
+        zlabel('z')
+        hold on
+        set(gca,'color','k')
+        set(gca,'xcolor','white')
+        set(gca,'ycolor','white')
+        set(gca,'zcolor','white')
+        % set(gcf,'color','#009ADC')
+        set(gcf,'color','black')
+        leftLeg1 = line([q7(1,4),q8(1,4),q9(1,4),q10(1,4),q11(1,4),q12(1,4),q13(1,4),q14(1,4)], ...
             [q7(2,4),q8(2,4),q9(2,4),q10(2,4),q11(2,4),q12(2,4),q13(2,4),q14(2,4)], ...
             [q7(3,4),q8(3,4),q9(3,4),q10(3,4),q11(3,4),q12(3,4),q13(3,4),q14(3,4)],'color','red','lineWidth',2);
-        leftArm = line([q15(1,4),q16(1,4),q17(1,4),q18(1,4),q18b(1,4)], ...
+        leftArm1 = line([q15(1,4),q16(1,4),q17(1,4),q18(1,4),q18b(1,4)], ...
             [q15(2,4),q16(2,4),q17(2,4),q18(2,4),q18b(2,4)], ...
             [q15(3,4),q16(3,4),q17(3,4),q18(3,4),q18b(3,4)],'color','red','lineWidth',2);
-        rightLeg = line([q19(1,4),q20(1,4),q21(1,4),q22(1,4),q23(1,4),q24(1,4),q25(1,4),q26(1,4)], ...
+        rightLeg1 = line([q19(1,4),q20(1,4),q21(1,4),q22(1,4),q23(1,4),q24(1,4),q25(1,4),q26(1,4)], ...
             [q19(2,4),q20(2,4),q21(2,4),q22(2,4),q23(2,4),q24(2,4),q25(2,4),q26(2,4)], ...
             [q19(3,4),q20(3,4),q21(3,4),q22(3,4),q23(3,4),q24(3,4),q25(3,4),q26(3,4)],'color','white','lineWidth',2);
-        rightArm = line([q27(1,4),q28(1,4),q29(1,4),q30(1,4),q30b(1,4)], ...
+        rightArm1 = line([q27(1,4),q28(1,4),q29(1,4),q30(1,4),q30b(1,4)], ...
             [q27(2,4),q28(2,4),q29(2,4),q30(2,4),q30b(2,4)], ...
             [q27(3,4),q28(3,4),q29(3,4),q30(3,4),q30b(3,4)],'color','white','lineWidth',2);
-
+        
+        subplot(2,1,2)
+        view([90 0]);
+        grid on
+        axis equal
+        xlim([-2 2])
+        ylim([-2 2])
+        zlim([-2 2])
+        xlabel('x')
+        ylabel('y')
+        zlabel('z')
+        hold on
+        set(gca,'color','k')
+        set(gca,'xcolor','white')
+        set(gca,'ycolor','white')
+        set(gca,'zcolor','white')
+        % set(gcf,'color','#009ADC')
+        set(gcf,'color','black')
+        leftLeg2 = line([q7(1,4),q8(1,4),q9(1,4),q10(1,4),q11(1,4),q12(1,4),q13(1,4),q14(1,4)], ...
+            [q7(2,4),q8(2,4),q9(2,4),q10(2,4),q11(2,4),q12(2,4),q13(2,4),q14(2,4)], ...
+            [q7(3,4),q8(3,4),q9(3,4),q10(3,4),q11(3,4),q12(3,4),q13(3,4),q14(3,4)],'color','red','lineWidth',2);
+        leftArm2 = line([q15(1,4),q16(1,4),q17(1,4),q18(1,4),q18b(1,4)], ...
+            [q15(2,4),q16(2,4),q17(2,4),q18(2,4),q18b(2,4)], ...
+            [q15(3,4),q16(3,4),q17(3,4),q18(3,4),q18b(3,4)],'color','red','lineWidth',2);
+        rightLeg2 = line([q19(1,4),q20(1,4),q21(1,4),q22(1,4),q23(1,4),q24(1,4),q25(1,4),q26(1,4)], ...
+            [q19(2,4),q20(2,4),q21(2,4),q22(2,4),q23(2,4),q24(2,4),q25(2,4),q26(2,4)], ...
+            [q19(3,4),q20(3,4),q21(3,4),q22(3,4),q23(3,4),q24(3,4),q25(3,4),q26(3,4)],'color','white','lineWidth',2);
+        rightArm2 = line([q27(1,4),q28(1,4),q29(1,4),q30(1,4),q30b(1,4)], ...
+            [q27(2,4),q28(2,4),q29(2,4),q30(2,4),q30b(2,4)], ...
+            [q27(3,4),q28(3,4),q29(3,4),q30(3,4),q30b(3,4)],'color','white','lineWidth',2);
 
 
 
@@ -520,10 +552,14 @@ function floating_base_animation2(t,x,want_record,name)
             writeVideo(video_obj,F)
         end
 
-        delete(leftLeg)
-        delete(leftArm)
-        delete(rightLeg)
-        delete(rightArm)
+        delete(leftLeg1)
+        delete(leftArm1)
+        delete(rightLeg1)
+        delete(rightArm1)
+        delete(leftLeg2)
+        delete(leftArm2)
+        delete(rightLeg2)
+        delete(rightArm2)
     end
     if want_record == 1
         close(video_obj)
