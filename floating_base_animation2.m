@@ -487,7 +487,7 @@ function floating_base_animation2(t,x,want_record,name)
         view([0 0]);
         grid on
         axis equal
-        xlim([-2 2])
+        xlim([-2 5])
         ylim([-2 2])
         zlim([-2 2])
         xlabel('x')
@@ -514,10 +514,10 @@ function floating_base_animation2(t,x,want_record,name)
             [q27(3,4),q28(3,4),q29(3,4),q30(3,4),q30b(3,4)],'color','white','lineWidth',2);
         
         subplot(2,1,2)
-        view([90 0]);
+        view([-90 0]);
         grid on
         axis equal
-        xlim([-2 2])
+        xlim([-2 5])
         ylim([-2 2])
         zlim([-2 2])
         xlabel('x')
