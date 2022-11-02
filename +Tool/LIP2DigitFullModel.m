@@ -90,7 +90,7 @@ function [Cost,Cnst] = HLIP_ObjectiveAndConstraints(sagital_LIP,lateral_LIP,foot
         %% angular momentum of base is 0
         ceq9 = dq0(4:6);
         %% initial step length
-        ceq10 = [(swing_foot_pose(1)-support_foot_pose(1))-sagital_LIP.u_star;
+        ceq10 = [(-swing_foot_pose(1)+support_foot_pose(1))-sagital_LIP.u_star;
                  (swing_foot_pose(2)-support_foot_pose(2))-LIP_lateral.u_star];
         %% heading direction
         ceq11 = [q0(6);

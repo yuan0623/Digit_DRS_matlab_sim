@@ -31,17 +31,17 @@ clear
 tic
 global y_global dy_global t_global global_position_reference Alpha t_LIP_global...
     x0_LIP_sagittal_global x0_LIP_lateral_global x_global u_saittal_global u_lateral_global...
-    hc_global hd_global
+    hc_global hd_global arm_pose_global
 tspan=[0 0.95];
 addpath('gen')
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
 % set the intitial condition.
-load initial_pose.mat
+%load initial_pose.mat
 
 %%
 foot_index = 1;
-load digit_lateral_LIP.mat
-load digit_sagittal_LIP.mat
+load data/digit_lateral_LIP_v1.mat
+load data/digit_sagittal_LIP_v1.mat
 LIP_para.sagittal_LIP = sagittal_LIP;
 LIP_para.lateral_LIP = lateral_LIP;
 %x0=Tool.LIP2DigitFullModel(LIP_para,foot_index);
@@ -86,8 +86,8 @@ x0(31:end)=[0.4975
 %}
 %H = 0.7;
 %%
-load x0
-
+load data/x0_v1
+arm_pose_global = [x0(15:18);x0(27:30)];
 if foot_index == -1
     current_stance_foot_position=forward_kinematics.digit_right_foot_pose(x0(1:30));  %Right foot as stance foot
     swing_foot = forward_kinematics.digit_left_foot_pose(x0(1:30));
@@ -102,7 +102,7 @@ Alpha3_R_FD = [0,0,0,0,0,0,0];
 Alpha4_R_FD = [0,0,0,0,0,0,0];
 Alpha5_R_FD = [swing_foot(1)-current_stance_foot_position(1),swing_foot(1),-0.06,0,0.06,0.08,0.25];
 Alpha6_R_FD = [swing_foot(2)-current_stance_foot_position(2),swing_foot(2),-0.06,0,0.06,0.08,0.25];
-Alpha7_R_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.001];
+Alpha7_R_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.003]/4;
 Alpha8_R_FD = [0,0,0,0,0,0,0];
 Alpha9_R_FD = [0,0,0,0,0,0,0];
 Alpha10_R_FD = [0,0,0,0,0,0,0];
@@ -113,7 +113,7 @@ Alpha3_L_FD = [0,0,0,0,0,0,0];
 Alpha4_L_FD = [0,0,0,0,0,0,0];
 Alpha5_L_FD = [swing_foot(1)-current_stance_foot_position(1),swing_foot(1),-0.06,0,0.06,0.08,0.25];
 Alpha6_L_FD = [swing_foot(2)-current_stance_foot_position(2),swing_foot(2),-0.06,0,0.06,0.08,0.25];
-Alpha7_L_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.001];
+Alpha7_L_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.003]/4;
 Alpha8_L_FD = [0,0,0,0,0,0,0];
 Alpha9_L_FD = [0,0,0,0,0,0,0];
 Alpha10_L_FD = [0,0,0,0,0,0,0];
@@ -200,7 +200,7 @@ for i=1:step
 end
 
 %% generate the animation
-floating_base_animation2(t_global,x_global',1,'digit_under_actuation')
+floating_base_animation2(t,x_sol,1,'digit_under_actuation')
 %rmpath('gen')
 %% generate the tracking results
 figure
