@@ -40,8 +40,8 @@ addpath('gen')
 
 %%
 foot_index = 1;
-load data/digit_lateral_LIP_v1.mat
-load data/digit_sagittal_LIP_v1.mat
+load ../LIP_motion_data/Digit/digit_lateral_LIP_v1.mat
+load ../LIP_motion_data/Digit/digit_sagittal_LIP_v1.mat
 LIP_para.sagittal_LIP = sagittal_LIP;
 LIP_para.lateral_LIP = lateral_LIP;
 %x0=Tool.LIP2DigitFullModel(LIP_para,foot_index);

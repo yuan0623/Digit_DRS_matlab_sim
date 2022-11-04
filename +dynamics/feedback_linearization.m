@@ -8,6 +8,8 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     u_lateral_min = -0.3;
     q=x(1:30);
     dq=x(31:60);
+    t_global_end = t_global(end);
+    t_ = t_global_end-t_end_desired;
     % compute hc and its derivative, check section III A
     if foot_index == -1
         hc = output_func.hc_R_sup(q);
@@ -33,8 +35,8 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     %% LIP planner
     if t == 0
         t_previous = 0;
-        x0_LIPSagittal = Tool.FOM2LIPSagittal(x,t,foot_index);
-        y0_LIPLateral = Tool.FOM2LIPLateral(x,t,foot_index);
+        x0_LIPSagittal = Tool.FOM2LIPSagittal(x,t_,foot_index);
+        y0_LIPLateral = Tool.FOM2LIPLateral(x,t_,foot_index);
         x_star_predict_sagittal = LIP_planner.LIP_run(x0_LIPSagittal,LIP_para,false);
         y_star_predict_lateral = LIP_planner.LIP_run(y0_LIPLateral,LIP_para,true);
         u_sagittal = LIP_para.sagittal_LIP.u_star+LIP_para.sagittal_LIP.K*(x_star_predict_sagittal(1:2)-LIP_para.sagittal_LIP.x_star');
@@ -63,8 +65,8 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     elseif t < 0.3
         if t-t_previous>0.015
             t_previous = t;
-            x0_LIPSagittal = Tool.FOM2LIPSagittal(x,t,foot_index);
-            y0_LIPLateral = Tool.FOM2LIPLateral(x,t,foot_index);
+            x0_LIPSagittal = Tool.FOM2LIPSagittal(x,t_,foot_index);
+            y0_LIPLateral = Tool.FOM2LIPLateral(x,t_,foot_index);
             x_star_predict_sagittal = LIP_planner.LIP_run(x0_LIPSagittal,LIP_para,false);
             y_star_predict_lateral = LIP_planner.LIP_run(y0_LIPLateral,LIP_para,true);
             u_sagittal = LIP_para.sagittal_LIP.u_star+LIP_para.sagittal_LIP.K*(x_star_predict_sagittal(1:2)-LIP_para.sagittal_LIP.x_star');
@@ -94,7 +96,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     end
     %%
     T = LIP_para.sagittal_LIP.T;
-    theta = t;
+    theta = t_;
     dtheta = 1;
     ds_dtheta = 1/T;
     s = theta * ds_dtheta;
