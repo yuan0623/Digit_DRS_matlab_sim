@@ -1,5 +1,5 @@
 function dx = dynamics(t,x,foot_index,current_stance_foot_position,t_end_of_previous_step,LIP_para,t_end_desired)
-    global t_global x_global
+    global t_global x_global Fr_global
     t_global=[t_global;t+t_end_of_previous_step];
     %global Fr COP
     [D,c_vec,B] = dynamics.dynamic_matrix_digit(x,foot_index);
@@ -30,8 +30,8 @@ function dx = dynamics(t,x,foot_index,current_stance_foot_position,t_end_of_prev
     %u = zeros(20,1);
     dx= Fx+Gx*u;
     %F_c = (j_c/D*j_c')\(j_c/D*c_vec-jj_c)-(j_c/D*j_c')\j_c/D*B*u;
-    %F_r = (j_c/D*j_c')\(j_c/D*c_vec-jj_c)-(j_c/D*j_c')\(j_c/D*B*u);
-    %Fr = [Fr,F_r];
+    F_r = (j_c/D*j_c')\(j_c/D*c_vec-jj_c)-(j_c/D*j_c')\(j_c/D*B*u);
+    Fr_global = [Fr_global,F_r];
     %p_y = F_r(4)/F_r(3);
     %p_x = -F_r(5)/F_r(3);
     %COP = [COP,[p_x;p_y]];

@@ -31,7 +31,7 @@ clear
 tic
 global y_global dy_global t_global global_position_reference Alpha t_LIP_global...
     x0_LIP_sagittal_global x0_LIP_lateral_global x_global u_saittal_global u_lateral_global...
-    hc_global hd_global arm_pose_global
+    hc_global hd_global arm_pose_global Fr_global
 tspan=[0 0.95];
 addpath('gen')
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
@@ -138,7 +138,7 @@ u_saittal_global = [];
 u_lateral_global = [];
 hc_global = [];
 hd_global = []
-
+Fr_global = [];
 step=20;
 t_end_of_previous_step=0;
 

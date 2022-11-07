@@ -77,3 +77,12 @@ plot(t_LIP_global_removed(1:end-1),diff(x0_LIP_lateral_global_removed(2,:))./dif
 hold off
 legend('mgy_{sc}','dL')
 title('lateral')
+
+%%
+ylabels= {'N','N','N','Nm','Nm','Nm'};
+for i = 1:6
+    subplot(6,1,i)
+    plot(t_global,Fr_global(i,:))
+    ylabel(ylabels{i})
+end
+xlabel('time (s)')
