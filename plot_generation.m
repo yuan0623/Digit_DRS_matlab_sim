@@ -39,24 +39,25 @@ hold off
 figure
 subplot(2,1,1)
 hold on
-plot(t_LIP_global,u_saittal_global)
 plot(t_LIP_global,LIP_para.sagittal_LIP.u_star*ones(length(t_LIP_global),1),'--')
 plot(t_global,hc_global(5,:),'*')
 plot(t_global,hd_global(5,:),'o')
+plot(t_LIP_global,u_saittal_global)
 hold off
-legend('planned step length full order model','u_{star}','hc','hd')
+legend('u_{star}','hc','hd','planned step length full order model')
 
 xlim([0 5])
 subplot(2,1,2)
 hold on
-plot(t_LIP_global,u_lateral_global)
+
 plot(t_LIP_global,LIP_para.lateral_LIP.Left.u_star*ones(length(t_LIP_global),1),'--')
 plot(t_LIP_global,LIP_para.lateral_LIP.Right.u_star*ones(length(t_LIP_global),1),'--')
 plot(t_global,hc_global(6,:),'*')
 plot(t_global,hd_global(6,:),'o')
+plot(t_LIP_global,u_lateral_global)
 xlim([0 5])
 xlabel('time (s)')
-legend('planned step length full order model','u_{star} left','u_{star} right','hc','hd')
+legend('u_{star} left','u_{star} right','hc','hd','planned step length full order model')
 hold off
 %% 
 figure

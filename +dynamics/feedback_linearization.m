@@ -62,7 +62,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
         Alpha(alpha_row_index,30:34) = linspace(Alpha(alpha_row_index,30),Alpha(alpha_row_index,34),5);
         Alpha(alpha_row_index,37:41) = linspace(Alpha(alpha_row_index,37),Alpha(alpha_row_index,41),5);
         
-    elseif t < 0.3
+    elseif t < 0.25
         if t-t_previous>0.015
             t_previous = t;
             x0_LIPSagittal = Tool.FOM2LIPSagittal(x,t_,foot_index);
@@ -89,6 +89,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
             Alpha(alpha_row_index,34) = u_sagittal;
             Alpha(alpha_row_index,42) = u_lateral;
             Alpha(alpha_row_index,41) = u_lateral;
+            
             Alpha(alpha_row_index,30:34) = linspace(Alpha(alpha_row_index,30),Alpha(alpha_row_index,34),5);
             Alpha(alpha_row_index,37:41) = linspace(Alpha(alpha_row_index,37),Alpha(alpha_row_index,41),5);
             
