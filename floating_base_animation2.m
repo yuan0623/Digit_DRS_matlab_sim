@@ -2,9 +2,13 @@ function floating_base_animation2(t,x,want_record,name)
     
     figure
     grid on
-    file_path=strcat('video/',name);
+    file_path=strcat("video/",name);
+
     if want_record == 1
-        video_obj = VideoWriter(file_path,'MPEG-4');
+        video_obj = VideoWriter(file_path);
+        video_obj.getProfiles
+        %video_obj.set
+        %video_obj.FileFormat = 'mp4';
         open(video_obj)
     end
     axis(gca,'equal')
@@ -489,7 +493,7 @@ function floating_base_animation2(t,x,want_record,name)
         axis equal
         xlim([-2 5])
         ylim([-2 2])
-        zlim([-2 2])
+        zlim([0 2])
         xlabel('x')
         ylabel('y')
         zlabel('z')
@@ -519,7 +523,7 @@ function floating_base_animation2(t,x,want_record,name)
         axis equal
         xlim([-2 5])
         ylim([-2 2])
-        zlim([-2 2])
+        zlim([0 2])
         xlabel('x')
         ylabel('y')
         zlabel('z')

@@ -1,6 +1,6 @@
 function visualize_IC(x)
     
-    %figure
+    figure
     %grid on
     %axis(gca,'equal')
 

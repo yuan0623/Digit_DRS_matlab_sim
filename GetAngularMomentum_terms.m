@@ -48,7 +48,7 @@ Jdq_AMworld_about_pA = Jdq_AMworld_about_pA + Jdq_linear;
 
 AMworld_about_pA_fun = SymFunction('AMworld_about_pA_func',AMworld_about_pA,{X,dX,pA});
 Jq_AMworld_about_pA_fun = SymFunction('Jq_AMworld_about_pA_func',Jq_AMworld_about_pA,{X,dX,pA,Jq_pA});
-Jdq_AMworld_about_pA_fun = SymFunction('Jdq_AMworld_about_pA_func',Jdq_AMworld_about_pA,{X,dX,pA,Jdq_pA});
+%Jdq_AMworld_about_pA_fun = SymFunction('Jdq_AMworld_about_pA_func',Jdq_AMworld_about_pA,{X,dX,pA,Jdq_pA});
 
 %export_simulation(AMworld_about_pA,'AMworld_about_pA',EXPO_PATH, {X,dX,pA}, TEMPLATE_PATH);
 %export_simulation(Jq_AMworld_about_pA,'Jq_AMworld_about_pA',EXPO_PATH, {X,dX,pA,Jq_pA}, TEMPLATE_PATH);
@@ -70,6 +70,8 @@ dJp_COM_fun = SymFunction('dJp_COM_func',dJp_COM,{X,dX});
 export(p_COM_fun, 'gen');
 export(Jp_COM_fun, 'gen');
 export(dJp_COM_fun, 'gen');
+
+export(SymFunction, 'Vars', {x}, 'File', 'Name', 'TemplateFile', TemplateCpp, 'TemplateHeader', TemplateHpp);
 
 function [dM] = MatrixTimeDerivative(M,X,dX)
 dim = size(M);

@@ -16,7 +16,7 @@ function L_foot_pose = digit_left_foot_pose(q)
               sin(q(6))  cos(q(6)) 0 0;
               0          0         1 0;
               0          0         0 1];
-    Rb_rpy = Rb_roll*Rb_pitch*Rb_yaw;
+    Rb_rpy = Rb_yaw*Rb_pitch*Rb_roll;
     Aw2b = Aw2bp*Rb_rpy;
     
 

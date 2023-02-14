@@ -1,5 +1,5 @@
 %% generate plot
-load ../LIP_motion_data/Digit/x_sol_desired_sagittal_v1
+load ../LIP_motion_data/Digit/x_sol_desired_sagittal_static_v5
 figure
 subplot(4,1,1)
 title('sagittal')
@@ -18,19 +18,19 @@ ylabel('L_y')
 xlim([0 5])
 hold off
 
-load ../LIP_motion_data/Digit/x_sol_desired_lateral_v1.mat
+load ../LIP_motion_data/Digit/x_sol_desired_lateral_static_v11.mat
 subplot(4,1,3)
 title('lateral')
 hold on
 plot(t_LIP_global, x0_LIP_lateral_global(1,:))
-plot(t_vec_desired,x_sol_desired(:,1))
+plot(t_vec_desired,-x_sol_desired(:,1))
 ylabel('y_{sc}')
 xlim([0 5])
 hold off
 subplot(4,1,4)
 hold on
 plot(t_LIP_global, x0_LIP_lateral_global(2,:))
-plot(t_vec_desired,x_sol_desired(:,2))
+plot(t_vec_desired,-x_sol_desired(:,2))
 ylabel('L_x')
 xlim([0 5])
 xlabel('time (s)')
@@ -87,3 +87,49 @@ for i = 1:6
     ylabel(ylabels{i})
 end
 xlabel('time (s)')
+
+%% generate plot compare with the MuJoCo
+load ../LIP_motion_data/Digit/x_sol_desired_sagittal_static_v3
+t_mujoco_vec = load("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/saved_data/t_abs_np_seq.csv");
+x_sc_mujoco_vec = load("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/saved_data/x_sc_np_seq.csv");
+y_sc_mujoco_vec = load("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/saved_data/y_sc_np_seq.csv");
+t_mujoco_vec = t_mujoco_vec-0.5;
+figure
+subplot(4,1,1)
+title('sagittal')
+hold on
+plot(t_LIP_global, x0_LIP_sagittal_global(1,:))
+plot(t_vec_desired,x_sol_desired(:,1))
+plot(t_mujoco_vec,x_sc_mujoco_vec(:,1))
+ylabel('x_{sc}')
+xlim([0 0.5])
+hold off
+legend('full','ALIP','MuJoCo')
+subplot(4,1,2)
+hold on
+plot(t_LIP_global, x0_LIP_sagittal_global(2,:))
+plot(t_vec_desired,x_sol_desired(:,2))
+plot(t_mujoco_vec,x_sc_mujoco_vec(:,2))
+ylabel('L_y')
+xlim([0 0.5])
+hold off
+
+load ../LIP_motion_data/Digit/x_sol_desired_lateral_static_v4.mat
+subplot(4,1,3)
+title('lateral')
+hold on
+plot(t_LIP_global, x0_LIP_lateral_global(1,:))
+plot(t_vec_desired,x_sol_desired(:,1))
+plot(t_mujoco_vec,y_sc_mujoco_vec(:,1))
+ylabel('y_{sc}')
+xlim([0 0.5])
+hold off
+subplot(4,1,4)
+hold on
+plot(t_LIP_global, x0_LIP_lateral_global(2,:))
+plot(t_vec_desired,x_sol_desired(:,2))
+plot(t_mujoco_vec,y_sc_mujoco_vec(:,2))
+ylabel('L_x')
+xlim([0 0.5])
+xlabel('time (s)')
+hold off

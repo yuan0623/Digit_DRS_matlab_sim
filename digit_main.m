@@ -39,17 +39,68 @@ addpath('gen')
 %load initial_pose.mat
 
 %%
-foot_index = 1;
-load ../LIP_motion_data/Digit/digit_lateral_LIP_v1.mat
-load ../LIP_motion_data/Digit/digit_sagittal_LIP_v1.mat
+foot_index = -1;
+%%%%%   working data with walking height = 0.71
+%load ../LIP_motion_data/Digit/digit_lateral_LIP_v1.mat
+%load ../LIP_motion_data/Digit/digit_sagittal_LIP_v1.mat
+%%%%%
+
+%%%%%   working data with walking height = 0.71
+load ../LIP_motion_data/Digit/digit_lateral_static_LIP_v11.mat
+load ../LIP_motion_data/Digit/digit_sagittal_static_LIP_v5.mat
+%%%%%
 LIP_para.sagittal_LIP = sagittal_LIP;
 LIP_para.lateral_LIP = lateral_LIP;
 %x0=Tool.LIP2DigitFullModel(LIP_para,foot_index);
 %Tool.visualize_IC(x0)
 %%  this is to make sure that the initial height of the support foot of the robot is 0.
 
+x0 = [0.04645511 -0.00593438  0.94067885 -0.0502494  -0.04662111  0.01980825...
+  0.29703766  0.01068313  0.31047759  0.13742269 -0.05179873 -0.02635923...
+  0.03498323 -0.03128759 -0.10349829  0.89771773 -0.00755183  0.36228671...
+ -0.31875985  0.03113156 -0.27414325 -0.06783108 -0.00313638  0.07715855...
+ -0.06318222  0.07277244  0.10110156 -0.89648244  0.0069389  -0.3625117...
+  0.1329908  -0.07278012 -0.07333705  0.08449233 -0.66941043  0.21019579...
+  0.16061859  0.16180009  0.64415412 -0.10823709 -0.32921098  0.14193104...
+  0.28152266 -0.16663444  0.03621916 -0.00077136  0.00240156  0.00337141...
+  0.27925165  0.15452639 -0.10434028 -1.30723239  1.16357474  0.163006...
+  1.59569826  6.85909107 -0.02210384 -0.00961818  0.00038172 -0.00267651]';  % MuJoCo IC
+
+q0 = [ 0.04724419  0.00948748  0.972288   -0.01153651 -0.00111326 -0.00211968...
+  0.37248052 -0.01440529  0.28128606  0.18253807 -0.01739451 -0.14640034...
+ -0.01293713 -0.08774635  0.08643063  0.09114971 -0.00094893 -0.10590642...
+  0.89770965 -0.00778789  0.36210181 -0.31736853  0.02864552 -0.27551352...
+ -0.18033733  0.01232627  0.15253168  0.01136451  0.1041071  -0.06193412...
+ -0.08791674  0.0689317   0.10446422 -0.89582043  0.00696051 -0.3621479 ]';
+dq0 = [ 0.00910991  0.0126516  -0.01661561  0.00129456  0.00086217 -0.00007702...
+  0.01411391  0.00413885 -0.01298267 -0.04932473  0.00015456  0.04943834...
+ -0.00030708  0.01643747 -0.00615679 -0.01210531  0.0164288  -0.00066697...
+  0.00136871 -0.0005484   0.00022506  0.01505237  0.00476341  0.01021632...
+  0.04712655  0.00008055 -0.04712137 -0.00014423 -0.00363007  0.01435385...
+ -0.01492034  0.01754231 -0.00108393  0.00098661 -0.0005519  -0.00005813]';
+SimpleIdx = [0,1,2,3,4,5,...
+                    6,7,8,9,10,11, 15,16,17,18,19,20,...
+                    21,22,23,24,25,26, 30,31,32,33,34,35]+1;
+q0 = q0(SimpleIdx);
+dq0 = dq0(SimpleIdx);
+
+x0 = [q0;dq0];
 
 
+
+%{
+%{
+x0 = [0.00000016  0.00000022  1.03000018  0.0000004  -0.00000855  0.00386176...
+  0.36540167 -0.00540489  0.29889598  0.34498649 -0.01264806 -0.31907522...
+  0.1181973  -0.01146249 -0.1057467   0.89666895 -0.00727967  0.36191416...
+ -0.33188193  0.00540582 -0.29889571 -0.34498655  0.0126489   0.31897502...
+ -0.11819785  0.01130749  0.10573701 -0.89665635  0.00747327 -0.36208294...
+  0.00011643  0.00027959  0.00000503  0.00051302 -0.01080443  0.00036644...
+  0.00211577 -0.00586886 -0.13474507 -0.4185992   0.4758167  -0.74984716...
+  0.68983342  0.04639072  0.00370426 -0.00021655  0.00005399  0.00023812...
+ -0.00036035  0.00703839  0.1351806   0.41848568 -0.4746751   0.74982216...
+ -0.6903606   0.0056759  -0.00286444  0.0001793  -0.00003324 -0.00024115]';
+%}
 %x0(31) = v_DRS(1);
 
 %{
@@ -85,8 +136,10 @@ x0(31:end)=[0.4975
     0.6220]';
 %}
 %H = 0.7;
+%}
 %%
-load data/x0_v1
+
+load data/x0_static_v11.mat
 arm_pose_global = [x0(15:18);x0(27:30)];
 if foot_index == -1
     current_stance_foot_position=forward_kinematics.digit_right_foot_pose(x0(1:30));  %Right foot as stance foot
@@ -102,7 +155,7 @@ Alpha3_R_FD = [0,0,0,0,0,0,0];
 Alpha4_R_FD = [0,0,0,0,0,0,0];
 Alpha5_R_FD = [swing_foot(1)-current_stance_foot_position(1),swing_foot(1),-0.06,0,0.06,0.08,0.25];
 Alpha6_R_FD = (swing_foot(2)-current_stance_foot_position(2))*[1,1,1,1,1,1,1];
-Alpha7_R_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.003]/4;
+Alpha7_R_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.001]/1.5;
 Alpha8_R_FD = [0,0,0,0,0,0,0];
 Alpha9_R_FD = [0,0,0,0,0,0,0];
 Alpha10_R_FD = [0,0,0,0,0,0,0];
@@ -113,7 +166,7 @@ Alpha3_L_FD = [0,0,0,0,0,0,0];
 Alpha4_L_FD = [0,0,0,0,0,0,0];
 Alpha5_L_FD = [swing_foot(1)-current_stance_foot_position(1),swing_foot(1),-0.06,0,0.06,0.08,0.25];
 Alpha6_L_FD = (swing_foot(2)-current_stance_foot_position(2))*[1,1,1,1,1,1,1];
-Alpha7_L_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.003]/4;
+Alpha7_L_FD = [0 0.011 0.077 0.1 0.077 0.011 -0.001]/1.5;
 Alpha8_L_FD = [0,0,0,0,0,0,0];
 Alpha9_L_FD = [0,0,0,0,0,0,0];
 Alpha10_L_FD = [0,0,0,0,0,0,0];
@@ -139,7 +192,7 @@ u_lateral_global = [];
 hc_global = [];
 hd_global = [];
 Fr_global = [];
-step=20;
+step=40;
 t_end_of_previous_step=0;
 
 t_interrupt=[];
@@ -202,7 +255,7 @@ for i=1:step
 end
 
 %% generate the animation
-floating_base_animation2(t,x_sol,1,'digit_under_actuation')
+floating_base_animation2(t,x_sol,1,"digit_under_actuation_MuJoCo_x0_")
 %rmpath('gen')
 %% generate the tracking results
 figure
@@ -211,23 +264,3 @@ plot(t,x_sol(:,1))
 %plot(t_global,global_position_reference)
 hold off
 %legend('actual position', 'reference')
-
-%figure
-%hold on
-%plot(global_position_reference(2:30:end,1),global_position_reference(2:30:end,2),'--')
-%plot(stance_foot_position_overall_mat(:,1),stance_foot_position_overall_mat(:,2),'o')
-%hold off
-
-%{
-lateral_LIP.H = lateral_LIP_v1.H;
-lateral_LIP.T = lateral_LIP_v1.T;
-lateral_LIP.Left.u_star = lateral_LIP_v1.Lu_star;
-lateral_LIP.Left.y_star = lateral_LIP_v1.Ly_star;
-lateral_LIP.Left.K = lateral_LIP_v1.LK;
-lateral_LIP.Left.y0 = lateral_LIP_v1.Ly0;
-
-lateral_LIP.Right.u_star = lateral_LIP_v1.Ru_star;
-lateral_LIP.Right.y_star = lateral_LIP_v1.Ry_star;
-lateral_LIP.Right.K = lateral_LIP_v1.RK;
-lateral_LIP.Right.y0 = lateral_LIP_v1.Ry0;
-%}
