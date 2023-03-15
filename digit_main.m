@@ -31,7 +31,7 @@ clear
 tic
 global y_global dy_global t_global global_position_reference Alpha t_LIP_global...
     x0_LIP_sagittal_global x0_LIP_lateral_global x_global u_saittal_global u_lateral_global...
-    hc_global hd_global arm_pose_global Fr_global
+    hc_global hd_global arm_pose_global Fr_global step_count
 tspan=[0 0.95];
 addpath('gen')
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
@@ -39,22 +39,46 @@ addpath('gen')
 %load initial_pose.mat
 
 %%
-foot_index = -1;
+foot_index = 1;
 %%%%%   working data with walking height = 0.71
 %load ../LIP_motion_data/Digit/digit_lateral_LIP_v1.mat
 %load ../LIP_motion_data/Digit/digit_sagittal_LIP_v1.mat
 %%%%%
 
 %%%%%   working data with walking height = 0.71
-load ../LIP_motion_data/Digit/digit_lateral_static_LIP_v11.mat
-load ../LIP_motion_data/Digit/digit_sagittal_static_LIP_v5.mat
+load ../LIP_motion_data/Digit/digit_lateral_static_LIP_v14.mat
+load ../LIP_motion_data/Digit/digit_sagittal_static_LIP_v16.mat
+%% 
 %%%%%
-LIP_para.sagittal_LIP = sagittal_LIP;
-LIP_para.lateral_LIP = lateral_LIP;
-%x0=Tool.LIP2DigitFullModel(LIP_para,foot_index);
-%Tool.visualize_IC(x0)
-%%  this is to make sure that the initial height of the support foot of the robot is 0.
+LIP_para.initial.sagittal_LIP = sagittal_LIP;
+LIP_para.initial.lateral_LIP = lateral_LIP;
+LIP_para.initial.sagittal_LIP.T = LIP_para.initial.sagittal_LIP.T/2;
+LIP_para.initial.lateral_LIP.T = LIP_para.initial.lateral_LIP.T/2;
 
+load ../LIP_motion_data/Digit/digit_lateral_static_LIP_v14.mat
+load ../LIP_motion_data/Digit/digit_sagittal_static_LIP_v16.mat
+LIP_para.noninitial.sagittal_LIP = sagittal_LIP;
+LIP_para.noninitial.lateral_LIP = lateral_LIP;
+%q0=Tool.GetStartingPose(LIP_para.noninitial,foot_index);
+%Tool.visualize_IC(q0)
+%x0=Tool.LIP2DigitFullModel(LIP_para.noninitial,foot_index);
+%Tool.visualize_IC(x0)
+%dq0 = zeros(30,1);
+%x0 = [q0;dq0];
+%%  this is to make sure that the initial height of the support foot of the robot is 0.
+q0 = [0.0328437,  -0.01727862,  0.97535971,  0.00576163,  0.00426058,  0.00405035,...
+  0.34879835, -0.01270276,  0.22949424,  0.16258706, -0.00076573, -0.16148333,...
+  0.06384575, -0.03616253, -0.09930101,  0.89616358, -0.00712672,  0.36241834,...
+ -0.34908855, -0.02553236, -0.20902921, -0.18818613,  0.01638354,  0.15432728,...
+ -0.02652462,  0.02444792,  0.09914147, -0.89489287,  0.00728998, -0.36258317]';
+dq0 = [ 0.16472205, -0.07582235, -0.14178435,  0.03851232,  0.05339287,  0.01475982, -0.07628616,...
+  0.02661768,  0.11579834, -0.08520979, -0.19279612,  0.49146141,  0.03404071,...
+ -0.16216706, -0.00085011,  0.00019614, -0.00004675,  0.00005245, -0.07799193,...
+ -0.0181153,  -0.8222329,  -0.72350771,  0.28312948, -0.65882423,  0.2222615,...
+ -0.12128032,  0.00248773, -0.00034299,  0.00060361, -0.00023921]';
+dq0 = zeros(30,1);
+x0 = [q0;dq0];
+%{
 x0 = [0.04645511 -0.00593438  0.94067885 -0.0502494  -0.04662111  0.01980825...
   0.29703766  0.01068313  0.31047759  0.13742269 -0.05179873 -0.02635923...
   0.03498323 -0.03128759 -0.10349829  0.89771773 -0.00755183  0.36228671...
@@ -78,15 +102,17 @@ dq0 = [ 0.00910991  0.0126516  -0.01661561  0.00129456  0.00086217 -0.00007702..
   0.00136871 -0.0005484   0.00022506  0.01505237  0.00476341  0.01021632...
   0.04712655  0.00008055 -0.04712137 -0.00014423 -0.00363007  0.01435385...
  -0.01492034  0.01754231 -0.00108393  0.00098661 -0.0005519  -0.00005813]';
+dq0 = zeros(30,1);
 SimpleIdx = [0,1,2,3,4,5,...
                     6,7,8,9,10,11, 15,16,17,18,19,20,...
                     21,22,23,24,25,26, 30,31,32,33,34,35]+1;
 q0 = q0(SimpleIdx);
-dq0 = dq0(SimpleIdx);
-
+%dq0 = dq0(SimpleIdx);
+support_foot = forward_kinematics.digit_left_foot_position(q0);
+q0(3) = q0(3)- support_foot(3);
 x0 = [q0;dq0];
-
-
+q0_opt = Tool.obtain_initial_pose_foot_width(q0,foot_index)
+%}
 
 %{
 %{
@@ -139,7 +165,7 @@ x0(31:end)=[0.4975
 %}
 %%
 
-load data/x0_static_v11.mat
+%load data/x0_standing_pose.mat
 arm_pose_global = [x0(15:18);x0(27:30)];
 if foot_index == -1
     current_stance_foot_position=forward_kinematics.digit_right_foot_pose(x0(1:30));  %Right foot as stance foot
@@ -199,7 +225,7 @@ t_interrupt=[];
 t_end_desired = 0;
 xe_vec = zeros(step,30);
 
-
+step_count = 1;
 %current_stance_foot_position(1)=0.0376;
 %% main loop
 for i=1:step
@@ -229,7 +255,13 @@ for i=1:step
     dq_plus=dynamics.resetmap(x_each_step(end,:),foot_index,LIP_para);
     x0=[x_each_step(end,1:30)';dq_plus];
     
-    t_end_desired = LIP_para.sagittal_LIP.T*i;
+    if step_count == 1
+        t_end_desired = LIP_para.initial.sagittal_LIP.T*i;
+
+    else
+        t_end_desired = LIP_para.noninitial.sagittal_LIP.T*(i-1)+LIP_para.initial.sagittal_LIP.T;
+    end
+    
     
     if foot_index==-1
         current_stance_foot_position=forward_kinematics.digit_right_foot_pose(x0(1:30));
@@ -252,10 +284,11 @@ for i=1:step
     Alpha(alpha_row_index,37) = hc(6);
     fprintf('hey,Ive finished %d step\n',i)
     stance_foot_position_overall_mat=[stance_foot_position_overall_mat;current_stance_foot_position'];
+    step_count = step_count + 1 ;
 end
 
 %% generate the animation
-floating_base_animation2(t,x_sol,1,"digit_under_actuation_MuJoCo_x0_")
+floating_base_animation2(t,x_sol,1,"digit_UA_MuJoCo_x0_v3")
 %rmpath('gen')
 %% generate the tracking results
 figure

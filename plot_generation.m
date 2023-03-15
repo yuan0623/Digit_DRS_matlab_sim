@@ -1,5 +1,5 @@
 %% generate plot
-load ../LIP_motion_data/Digit/x_sol_desired_sagittal_static_v5
+load ../LIP_motion_data/Digit/x_sol_desired_sagittal_static_v16
 figure
 subplot(4,1,1)
 title('sagittal')
@@ -7,7 +7,7 @@ hold on
 plot(t_LIP_global, x0_LIP_sagittal_global(1,:))
 plot(t_vec_desired,x_sol_desired(:,1))
 ylabel('x_{sc}')
-xlim([0 5])
+%xlim([0 5])
 hold off
 legend('full','ALIP')
 subplot(4,1,2)
@@ -15,31 +15,31 @@ hold on
 plot(t_LIP_global, x0_LIP_sagittal_global(2,:))
 plot(t_vec_desired,x_sol_desired(:,2))
 ylabel('L_y')
-xlim([0 5])
+%xlim([0 5])
 hold off
 
-load ../LIP_motion_data/Digit/x_sol_desired_lateral_static_v11.mat
+load ../LIP_motion_data/Digit/x_sol_desired_lateral_static_v14.mat
 subplot(4,1,3)
 title('lateral')
 hold on
 plot(t_LIP_global, x0_LIP_lateral_global(1,:))
-plot(t_vec_desired,-x_sol_desired(:,1))
+plot(t_vec_desired,x_sol_desired(:,1))
 ylabel('y_{sc}')
-xlim([0 5])
+%xlim([0 5])
 hold off
 subplot(4,1,4)
 hold on
 plot(t_LIP_global, x0_LIP_lateral_global(2,:))
-plot(t_vec_desired,-x_sol_desired(:,2))
+plot(t_vec_desired,x_sol_desired(:,2))
 ylabel('L_x')
-xlim([0 5])
+%xlim([0 5])
 xlabel('time (s)')
 hold off
 %%
 figure
 subplot(2,1,1)
 hold on
-plot(t_LIP_global,LIP_para.sagittal_LIP.u_star*ones(length(t_LIP_global),1),'--')
+plot(t_LIP_global,LIP_para.noninitial.sagittal_LIP.u_star*ones(length(t_LIP_global),1),'--')
 plot(t_global,hc_global(5,:),'*')
 plot(t_global,hd_global(5,:),'o')
 plot(t_LIP_global,u_saittal_global)
@@ -50,8 +50,8 @@ xlim([0 5])
 subplot(2,1,2)
 hold on
 
-plot(t_LIP_global,LIP_para.lateral_LIP.Left.u_star*ones(length(t_LIP_global),1),'--')
-plot(t_LIP_global,LIP_para.lateral_LIP.Right.u_star*ones(length(t_LIP_global),1),'--')
+plot(t_LIP_global,LIP_para.noninitial.lateral_LIP.Left.u_star*ones(length(t_LIP_global),1),'--')
+plot(t_LIP_global,LIP_para.noninitial.lateral_LIP.Right.u_star*ones(length(t_LIP_global),1),'--')
 plot(t_global,hc_global(6,:),'*')
 plot(t_global,hd_global(6,:),'o')
 plot(t_LIP_global,u_lateral_global)
@@ -89,7 +89,7 @@ end
 xlabel('time (s)')
 
 %% generate plot compare with the MuJoCo
-load ../LIP_motion_data/Digit/x_sol_desired_sagittal_static_v3
+load ../LIP_motion_data/Digit/x_sol_desired_sagittal_static_v14
 t_mujoco_vec = load("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/saved_data/t_abs_np_seq.csv");
 x_sc_mujoco_vec = load("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/saved_data/x_sc_np_seq.csv");
 y_sc_mujoco_vec = load("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/saved_data/y_sc_np_seq.csv");
@@ -114,7 +114,7 @@ ylabel('L_y')
 xlim([0 0.5])
 hold off
 
-load ../LIP_motion_data/Digit/x_sol_desired_lateral_static_v4.mat
+load ../LIP_motion_data/Digit/x_sol_desired_lateral_static_v14.mat
 subplot(4,1,3)
 title('lateral')
 hold on

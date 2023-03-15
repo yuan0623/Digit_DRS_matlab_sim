@@ -57,6 +57,9 @@ Jq_AMworld_about_pA_fun = SymFunction('Jq_AMworld_about_pA_func',Jq_AMworld_abou
 export(AMworld_about_pA_fun, ' ');
 export(Jq_AMworld_about_pA_fun,' ');
 export(Jdq_AMworld_about_pA_fun,' ');
+
+
+export(AMworld_about_pA, 'Vars', {X ,dX,pA}, 'File', ['useless_exe/AMworld_about_pA_SymEx'], 'BuildMex', true, 'ForceExport',true)
 %%
 % notice: Angular Momentum = f(q)*dq;
 p_COM= Robot.getComPosition()';
@@ -80,4 +83,6 @@ for i = 1:dim(2)
     dM(:,i) = jacobian(M(:,i),X)*dX;
 end
 end
+
+%%
 

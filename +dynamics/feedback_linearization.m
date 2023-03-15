@@ -2,8 +2,14 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     B_overall,foot_index,t_end_of_previous_step,LIP_para,current_stance_foot_position,...
     t_end_desired)
     global Alpha t_global t_LIP_global x0_LIP_sagittal_global x0_LIP_lateral_global...
-        u_saittal_global u_lateral_global hc_global hd_global arm_pose_global
+        u_saittal_global u_lateral_global hc_global hd_global arm_pose_global step_count
     persistent t_previous
+    if step_count == 1
+        LIP_para = LIP_para.initial;
+
+    else
+        LIP_para = LIP_para.noninitial;
+    end
     u_lateral_max = 0.3;
     u_lateral_min = -0.3;
     q=x(1:30);
@@ -39,6 +45,10 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
         y0_LIPLateral = Tool.FOM2LIPLateral(x,t_,foot_index)
         x_star_predict_sagittal = LIP_planner.LIP_run(x0_LIPSagittal,LIP_para,false);
         y_star_predict_lateral = LIP_planner.LIP_run(y0_LIPLateral,LIP_para,true);
+
+        
+
+            
         u_sagittal = LIP_para.sagittal_LIP.u_star+LIP_para.sagittal_LIP.K*(x_star_predict_sagittal(1:2)-LIP_para.sagittal_LIP.x_star');
         u_lateral = u_lateral_star+K_lateral*(y_star_predict_lateral(1:2)-y_star_lateral');
         
