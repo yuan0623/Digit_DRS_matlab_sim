@@ -17,7 +17,7 @@ function dx = dynamics(t,x,LIP_para,is_lateral)
         A = [0 -1/(m*H) 0;
             -m*g  0 0;
             0    0 0];
-        vx_DRS = v_DRS(1);
+        vx_DRS = v_DRS(2);
     end
     g_t = [-vx_DRS;
          0;

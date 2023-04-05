@@ -16,7 +16,7 @@ function floating_base_animation2(t,x,want_record,name)
     ylim([-1 2]);
     
 %     gif('fourtDigitTest.gif','DelayTime',1/60); %add-on 'gif.m' by chad greene
-    for i=1:1:num_of_frame
+    for i=1:5:num_of_frame
         q = x(i,1:30);
        
         %world to base frame

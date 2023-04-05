@@ -31,7 +31,7 @@ clear
 tic
 global y_global dy_global t_global global_position_reference Alpha t_LIP_global...
     x0_LIP_sagittal_global x0_LIP_lateral_global x_global u_saittal_global u_lateral_global...
-    hc_global hd_global arm_pose_global Fr_global step_count
+    hc_global hd_global arm_pose_global Fr_global step_count DRS_pos_global
 tspan=[0 0.95];
 addpath('gen')
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
@@ -46,16 +46,16 @@ foot_index = 1;
 %%%%%
 
 %%%%%   working data with walking height = 0.71
-load ../LIP_motion_data/Digit/digit_lateral_static_LIP_v14.mat
+load ../LIP_motion_data/Digit/digit_lateral_DRS_LIP_v5.mat
 load ../LIP_motion_data/Digit/digit_sagittal_static_LIP_v16.mat
 %% 
 %%%%%
 LIP_para.initial.sagittal_LIP = sagittal_LIP;
 LIP_para.initial.lateral_LIP = lateral_LIP;
-LIP_para.initial.sagittal_LIP.T = LIP_para.initial.sagittal_LIP.T/2;
-LIP_para.initial.lateral_LIP.T = LIP_para.initial.lateral_LIP.T/2;
+LIP_para.initial.sagittal_LIP.T = LIP_para.initial.sagittal_LIP.T;
+LIP_para.initial.lateral_LIP.T = LIP_para.initial.lateral_LIP.T;
 
-load ../LIP_motion_data/Digit/digit_lateral_static_LIP_v14.mat
+load ../LIP_motion_data/Digit/digit_lateral_DRS_LIP_v5.mat
 load ../LIP_motion_data/Digit/digit_sagittal_static_LIP_v16.mat
 LIP_para.noninitial.sagittal_LIP = sagittal_LIP;
 LIP_para.noninitial.lateral_LIP = lateral_LIP;
@@ -66,6 +66,7 @@ LIP_para.noninitial.lateral_LIP = lateral_LIP;
 %dq0 = zeros(30,1);
 %x0 = [q0;dq0];
 %%  this is to make sure that the initial height of the support foot of the robot is 0.
+
 q0 = [0.0328437,  -0.01727862,  0.97535971,  0.00576163,  0.00426058,  0.00405035,...
   0.34879835, -0.01270276,  0.22949424,  0.16258706, -0.00076573, -0.16148333,...
   0.06384575, -0.03616253, -0.09930101,  0.89616358, -0.00712672,  0.36241834,...
@@ -76,7 +77,10 @@ dq0 = [ 0.16472205, -0.07582235, -0.14178435,  0.03851232,  0.05339287,  0.01475
  -0.16216706, -0.00085011,  0.00019614, -0.00004675,  0.00005245, -0.07799193,...
  -0.0181153,  -0.8222329,  -0.72350771,  0.28312948, -0.65882423,  0.2222615,...
  -0.12128032,  0.00248773, -0.00034299,  0.00060361, -0.00023921]';
+
 dq0 = zeros(30,1);
+[p_DRS,v_DRS,a_DRS] = dynamics.platform_motion(0,LIP_para.noninitial.lateral_LIP.T );
+dq0(2) = v_DRS(2);
 x0 = [q0;dq0];
 %{
 x0 = [0.04645511 -0.00593438  0.94067885 -0.0502494  -0.04662111  0.01980825...
@@ -165,7 +169,7 @@ x0(31:end)=[0.4975
 %}
 %%
 
-%load data/x0_standing_pose.mat
+load data/x0_DRS_v5.mat
 arm_pose_global = [x0(15:18);x0(27:30)];
 if foot_index == -1
     current_stance_foot_position=forward_kinematics.digit_right_foot_pose(x0(1:30));  %Right foot as stance foot
@@ -218,6 +222,7 @@ u_lateral_global = [];
 hc_global = [];
 hd_global = [];
 Fr_global = [];
+DRS_pos_global = [];
 step=40;
 t_end_of_previous_step=0;
 
@@ -288,7 +293,7 @@ for i=1:step
 end
 
 %% generate the animation
-floating_base_animation2(t,x_sol,1,"digit_UA_MuJoCo_x0_v3")
+floating_base_animation2(t,x_sol,1,"digit_UA_MUJOCO_x0_v3")
 %rmpath('gen')
 %% generate the tracking results
 figure
