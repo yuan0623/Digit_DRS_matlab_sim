@@ -10,30 +10,29 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     else
         LIP_para = LIP_para.noninitial;
     end
-    u_lateral_max = 0.3;
-    u_lateral_min = -0.3;
+
     q=x(1:30);
     dq=x(31:60);
-    t_global_end = t_global(end);
-    t_ = t_global_end-t_end_desired;
+    %t_global_end = t_global(end);
+    %t_ = t_global_end-t_end_desired;
     % compute hc and its derivative, check section III A
-    if foot_index == -1
+    if foot_index == -1  % rightfoot support
         hc = output_func.hc_R_sup(q);
         j_hc = output_func.j_hc_R_sup(q);
         jj_hc = output_func.jj_hc_R_sup(q,dq);
-        swing_foot_pose = forward_kinematics.digit_left_foot_pose(q);
-        u_lateral_star = LIP_para.lateral_LIP.Right.u_star;
-        K_lateral = LIP_para.lateral_LIP.Right.K;
-        y_star_lateral = LIP_para.lateral_LIP.Right.y_star;
+        %swing_foot_pose = forward_kinematics.digit_left_foot_pose(q);
+        %u_lateral_star = LIP_para.lateral_LIP.Right.u_star;
+        %K_lateral = LIP_para.lateral_LIP.Right.K;
+        %y_star_lateral = LIP_para.lateral_LIP.Right.y_star;
         alpha_row_index = 1;
-    elseif foot_index == 1
+    elseif foot_index == 1 % leftfoot support
         hc = output_func.hc_L_sup(q);
         j_hc=output_func.j_hc_L_sup(q);
         jj_hc = output_func.jj_hc_L_sup(q,dq);
-        swing_foot_pose = forward_kinematics.digit_right_foot_pose(q);
-        u_lateral_star = LIP_para.lateral_LIP.Left.u_star;
-        K_lateral = LIP_para.lateral_LIP.Left.K;
-        y_star_lateral = LIP_para.lateral_LIP.Left.y_star;
+        %swing_foot_pose = forward_kinematics.digit_right_foot_pose(q);
+        %u_lateral_star = LIP_para.lateral_LIP.Left.u_star;
+        %K_lateral = LIP_para.lateral_LIP.Left.K;
+        %y_star_lateral = LIP_para.lateral_LIP.Left.y_star;
         alpha_row_index = 2;
     end
     t_ = t_global(end)-t_end_desired;
@@ -43,14 +42,16 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
         t_previous = 0;
         x0_LIPSagittal = Tool.FOM2LIPSagittal(x,t_,foot_index)
         y0_LIPLateral = Tool.FOM2LIPLateral(x,t_,foot_index)
-        x_star_predict_sagittal = LIP_planner.LIP_run(x0_LIPSagittal,LIP_para,false);
-        y_star_predict_lateral = LIP_planner.LIP_run(y0_LIPLateral,LIP_para,true);
+        %x_star_predict_sagittal = LIP_planner.LIP_run(x0_LIPSagittal,LIP_para,false);
+        %y_star_predict_lateral = LIP_planner.LIP_run(y0_LIPLateral,LIP_para,true);
 
         
 
             
-        u_sagittal = LIP_para.sagittal_LIP.u_star+LIP_para.sagittal_LIP.K*(x_star_predict_sagittal(1:2)-LIP_para.sagittal_LIP.x_star');
-        u_lateral = u_lateral_star+K_lateral*(y_star_predict_lateral(1:2)-y_star_lateral');
+        %u_sagittal = LIP_para.sagittal_LIP.u_star+LIP_para.sagittal_LIP.K*(x_star_predict_sagittal(1:2)-LIP_para.sagittal_LIP.x_star');
+        %u_lateral = u_lateral_star+K_lateral*(y_star_predict_lateral(1:2)-y_star_lateral');
+
+        [u_sagittal, u_lateral] = LIP_planner.getFootPlacement(x0_LIPSagittal, y0_LIPLateral, t_,LIP_para, foot_index);
         
         %u_lateral = regulate_lateral_step(foot_index,u_lateral);
         %if u_lateral>u_lateral_max
@@ -72,16 +73,17 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
         Alpha(alpha_row_index,30:34) = linspace(Alpha(alpha_row_index,30),Alpha(alpha_row_index,34),5);
         Alpha(alpha_row_index,37:41) = linspace(Alpha(alpha_row_index,37),Alpha(alpha_row_index,41),5);
         
-    elseif t < LIP_para.sagittal_LIP.T
+    elseif t < LIP_para.T
         if t-t_previous>0.015
             t_previous = t;
             x0_LIPSagittal = Tool.FOM2LIPSagittal(x,t_,foot_index)
             y0_LIPLateral = Tool.FOM2LIPLateral(x,t_,foot_index)
-            x_star_predict_sagittal = LIP_planner.LIP_run(x0_LIPSagittal,LIP_para,false);
-            y_star_predict_lateral = LIP_planner.LIP_run(y0_LIPLateral,LIP_para,true);
-            u_sagittal = LIP_para.sagittal_LIP.u_star+LIP_para.sagittal_LIP.K*(x_star_predict_sagittal(1:2)-LIP_para.sagittal_LIP.x_star');
-            u_lateral = u_lateral_star+K_lateral*(y_star_predict_lateral(1:2)-y_star_lateral');
+            %x_star_predict_sagittal = LIP_planner.LIP_run(x0_LIPSagittal,LIP_para,false);
+            %y_star_predict_lateral = LIP_planner.LIP_run(y0_LIPLateral,LIP_para,true);
+            %u_sagittal = LIP_para.sagittal_LIP.u_star+LIP_para.sagittal_LIP.K*(x_star_predict_sagittal(1:2)-LIP_para.sagittal_LIP.x_star');
+            %u_lateral = u_lateral_star+K_lateral*(y_star_predict_lateral(1:2)-y_star_lateral');
             
+            [u_sagittal, u_lateral] = LIP_planner.getFootPlacement(x0_LIPSagittal, y0_LIPLateral, t_, LIP_para, foot_index);
             %u_lateral = regulate_lateral_step(foot_index,u_lateral);
             %if u_lateral>u_lateral_max
             %    u_lateral = u_lateral_max;
@@ -107,7 +109,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
         end
     end
     %%
-    T = LIP_para.sagittal_LIP.T;
+    T = LIP_para.T;
     theta = t_;
     dtheta = 1;
     ds_dtheta = 1/T;
@@ -155,23 +157,3 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
 end  
 
 
-function u_lateral_regulated=regulate_lateral_step(foot_index,u_lateral)
-    if foot_index == -1 % right support
-        if u_lateral<0.08
-            u_lateral_regulated = 0.08;
-        elseif u_lateral>0.3
-            u_lateral_regulated = 0.3;
-        else 
-            u_lateral_regulated = u_lateral;
-        end
-    elseif foot_index == 1 % left support
-        if u_lateral>-0.08
-            u_lateral_regulated = -0.08;
-        elseif u_lateral<-0.3
-            u_lateral_regulated = -0.3;
-        else 
-            u_lateral_regulated = u_lateral;
-        end
-    end
-    
-end

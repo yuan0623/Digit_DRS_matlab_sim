@@ -14,7 +14,7 @@ function dx = dynamics(t,x,foot_index,current_stance_foot_position,t_end_of_prev
         j_c = numeric_jacobian(@hol_ctr.left_holonomic_constraint,q);
         jj_c = hol_ctr.jacDotL(q,dq);
     end
-    [p_DRS,v_DRS,a_DRS] = dynamics.platform_motion(t_global(end),LIP_para.noninitial.sagittal_LIP.T);
+    [p_DRS,v_DRS,a_DRS] = dynamics.platform_motion(t_global(end),LIP_para.noninitial.T);
     DRS_pos_global = [DRS_pos_global,p_DRS(2)];
     c_overall = c_vec-j_c'/(j_c/D*j_c')*(j_c/D*c_vec-jj_c+a_DRS);
     B_overall = B-j_c'/(j_c/D*j_c')*j_c/D*B;

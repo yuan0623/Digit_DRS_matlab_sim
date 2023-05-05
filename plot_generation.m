@@ -1,64 +1,56 @@
 %% generate plot
-load ../LIP_motion_data/Digit/x_sol_desired_sagittal_static_v16
 figure
 subplot(4,1,1)
 title('sagittal')
 hold on
 plot(t_LIP_global, x0_LIP_sagittal_global(1,:))
-plot(t_vec_desired,x_sol_desired(:,1))
 ylabel('x_{sc}')
-xlim([0 25])
+%xlim([0 25])
 hold off
-legend('full','ALIP')
 subplot(4,1,2)
 hold on
 plot(t_LIP_global, x0_LIP_sagittal_global(2,:))
-plot(t_vec_desired,x_sol_desired(:,2))
-plot(t_global,DRS_pos_global)
 ylabel('L_y')
-xlim([0 25])
+%xlim([0 25])
 hold off
 
-load ../LIP_motion_data/Digit/x_sol_desired_lateral_DRS_v5
 subplot(4,1,3)
 title('lateral')
 hold on
 plot(t_LIP_global, x0_LIP_lateral_global(1,:))
-plot(t_vec_desired,x_sol_desired(:,1))
 ylabel('y_{sc}')
-xlim([0 25])
+%xlim([0 25])
 hold off
 subplot(4,1,4)
 hold on
 plot(t_LIP_global, x0_LIP_lateral_global(2,:))
-plot(t_vec_desired,x_sol_desired(:,2))
 ylabel('L_x')
-xlim([0 25])
+%xlim([0 25])
 xlabel('time (s)')
 hold off
 %%
 figure
 subplot(2,1,1)
 hold on
-plot(t_LIP_global,LIP_para.noninitial.sagittal_LIP.u_star*ones(length(t_LIP_global),1),'--')
+%plot(t_LIP_global,LIP_para.noninitial.sagittal_LIP.u_star*ones(length(t_LIP_global),1),'--')
 plot(t_global,hc_global(5,:),'*')
 plot(t_global,hd_global(5,:),'o')
 plot(t_LIP_global,u_saittal_global)
 hold off
-legend('u_{star}','hc','hd','planned step length full order model')
+legend('hc','hd','planned step length full order model')
 
-xlim([0 5])
+%xlim([0 5])
 subplot(2,1,2)
 hold on
 
-plot(t_LIP_global,LIP_para.noninitial.lateral_LIP.Left.u_star*ones(length(t_LIP_global),1),'--')
-plot(t_LIP_global,LIP_para.noninitial.lateral_LIP.Right.u_star*ones(length(t_LIP_global),1),'--')
+%plot(t_LIP_global,LIP_para.noninitial.lateral_LIP.Left.u_star*ones(length(t_LIP_global),1),'--')
+%plot(t_LIP_global,LIP_para.noninitial.lateral_LIP.Right.u_star*ones(length(t_LIP_global),1),'--')
 plot(t_global,hc_global(6,:),'*')
 plot(t_global,hd_global(6,:),'o')
 plot(t_LIP_global,u_lateral_global)
-xlim([0 5])
+%xlim([0 5])
 xlabel('time (s)')
-legend('u_{star} left','u_{star} right','hc','hd','planned step length full order model')
+legend('hc','hd','planned step length full order model')
 hold off
 %% 
 figure
