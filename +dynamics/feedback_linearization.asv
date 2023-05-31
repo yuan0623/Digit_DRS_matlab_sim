@@ -2,7 +2,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     B_overall,foot_index,t_end_of_previous_step,LIP_para,current_stance_foot_position,...
     t_end_desired)
     global Alpha t_global t_LIP_global x0_LIP_sagittal_global x0_LIP_lateral_global...
-        u_saittal_global u_lateral_global hc_global hd_global arm_pose_global step_count V_global
+        u_saittal_global u_lateral_global hc_global hd_global arm_pose_global step_count
     persistent t_previous
     if step_count == 1
         LIP_para = LIP_para.initial;
@@ -156,7 +156,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     beta = 0.001;
     X_eta = [x0_LIPSagittal(1:2);y0_LIPLateral(1:2)];
     V_eta = beta*X_eta'*X_eta;
-    V = V_h+V_eta;
+    V = V_h
 
 
     v = -Kp*y-Kd*y_dot;
@@ -166,7 +166,6 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     
     hc_global = [hc_global,hc];
     hd_global = [hd_global,hd];
-    V_global = [V_global,V];
 end  
 
 

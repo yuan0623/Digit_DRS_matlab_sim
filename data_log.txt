@@ -1,0 +1,4 @@
+DRS_v1 amp = 0.02 T = 0.35*15
+DRS_v2 amp = 0.04 T = 0.35*15
+DRS_v3 amp = 0.04 T = 0.35*10
+DRS_v3 amp = 0.04 T = 0.35*5   cos

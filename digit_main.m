@@ -31,7 +31,8 @@ clear
 tic
 global y_global dy_global t_global global_position_reference Alpha t_LIP_global...
     x0_LIP_sagittal_global x0_LIP_lateral_global x_global u_saittal_global u_lateral_global...
-    hc_global hd_global arm_pose_global Fr_global step_count DRS_pos_global
+    hc_global hd_global arm_pose_global Fr_global step_count DRS_pos_global DRS_int_global_tT DRS_int_global_TT...
+    V_global
 tspan=[0 0.95];
 addpath('gen')
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
@@ -43,20 +44,23 @@ foot_index = 1;
 
 %% 
 %%%%%
-LIP_para.initial.T = 0.35/2;
+LIP_para.initial.T = 0.4/2;
 LIP_para.initial.m = 46.51;
 LIP_para.initial.H = 0.9;
 LIP_para.initial.W = 0.2;
 LIP_para.initial.g = 9.81;
 LIP_para.initial.v_des = 0;
+LIP_para.initial.T_DRS_x = LIP_para.initial.T*1;
+LIP_para.initial.T_DRS_y = LIP_para.initial.T*1;
 
-
-LIP_para.noninitial.T = 0.35;
+LIP_para.noninitial.T = 0.4;
 LIP_para.noninitial.m = 46.51;
 LIP_para.noninitial.H = 0.9;
 LIP_para.noninitial.W = 0.2;
 LIP_para.noninitial.g = 9.81;
 LIP_para.noninitial.v_des = 0;
+LIP_para.noninitial.T_DRS_x = LIP_para.initial.T*1;
+LIP_para.noninitial.T_DRS_y = LIP_para.initial.T*1;
 %q0=Tool.GetStartingPose(LIP_para.noninitial,foot_index);
 %Tool.visualize_IC(q0)
 %x0=Tool.LIP2DigitFullModel(LIP_para.noninitial,foot_index);
@@ -75,19 +79,22 @@ q0 = [0.0328437,  -0.01727862,  0.97535971,  0.00576163,  0.00426058,  0.0040503
 dq0 = zeros(30,1);
 [p_DRS,v_DRS,a_DRS] = dynamics.platform_motion(0,LIP_para.noninitial.T );
 dq0(2) = v_DRS(2);
-x0 = [q0;dq0];
+
 
 %%
 
-arm_pose_global = [x0(15:18);x0(27:30)];
+
 if foot_index == -1
-    current_stance_foot_position=forward_kinematics.digit_right_foot_pose(x0(1:30));  %Right foot as stance foot
-    swing_foot = forward_kinematics.digit_left_foot_pose(x0(1:30));
+    current_stance_foot_position=forward_kinematics.digit_right_foot_pose(q0);  %Right foot as stance foot
+    swing_foot = forward_kinematics.digit_left_foot_pose(q0);
 elseif foot_index == 1
-    current_stance_foot_position=forward_kinematics.digit_left_foot_pose(x0(1:30));  %Left foot as stance foot
-    swing_foot = forward_kinematics.digit_right_foot_pose(x0(1:30));
+    current_stance_foot_position=forward_kinematics.digit_left_foot_pose(q0);  %Left foot as stance foot
+    swing_foot = forward_kinematics.digit_right_foot_pose(q0);
 end
 
+q0(3) = q0(3) - current_stance_foot_position(3);
+x0 = [q0;dq0];
+arm_pose_global = [x0(15:18);x0(27:30)];
 Alpha1_R_FD = [1 1 1 1 1 1 1]*LIP_para.noninitial.H;
 Alpha2_R_FD = [0,0,0,0,0,0,0];
 Alpha3_R_FD = [0,0,0,0,0,0,0];
@@ -132,7 +139,10 @@ hc_global = [];
 hd_global = [];
 Fr_global = [];
 DRS_pos_global = [];
-step=40;
+DRS_int_global_tT = [];
+DRS_int_global_TT = [];
+V_global = [];
+step=20;
 t_end_of_previous_step=0;
 
 t_interrupt=[];
@@ -206,7 +216,7 @@ for i=1:step
 end
 
 %% generate the animation
-floating_base_animation2(t,x_sol,1,"digit_UA_type2_planner_static")
+floating_base_animation2(t,x_sol,1,"digit_UA_type2_planner_DRS_v2")
 %rmpath('gen')
 %% generate the tracking results
 figure

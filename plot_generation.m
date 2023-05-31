@@ -6,11 +6,13 @@ hold on
 plot(t_LIP_global, x0_LIP_sagittal_global(1,:))
 ylabel('x_{sc}')
 %xlim([0 25])
+ylim([-0.02 0.02])
 hold off
 subplot(4,1,2)
 hold on
 plot(t_LIP_global, x0_LIP_sagittal_global(2,:))
 ylabel('L_y')
+ylim([-2 2])
 %xlim([0 25])
 hold off
 
@@ -20,12 +22,14 @@ hold on
 plot(t_LIP_global, x0_LIP_lateral_global(1,:))
 ylabel('y_{sc}')
 %xlim([0 25])
+%ylim([-0.2 0.2])
 hold off
 subplot(4,1,4)
 hold on
 plot(t_LIP_global, x0_LIP_lateral_global(2,:))
 ylabel('L_x')
 %xlim([0 25])
+%ylim([-20 20])
 xlabel('time (s)')
 hold off
 %%
