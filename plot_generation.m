@@ -3,30 +3,32 @@ figure
 subplot(4,1,1)
 title('sagittal')
 hold on
-plot(t_LIP_global, x0_LIP_sagittal_global(1,:))
+plot(t_global, x0_LIP_sagittal_global(1,:))
 ylabel('x_{sc}')
 %xlim([0 25])
-ylim([-0.02 0.02])
+%ylim([-0.02 0.02])
 hold off
 subplot(4,1,2)
 hold on
-plot(t_LIP_global, x0_LIP_sagittal_global(2,:))
+plot(t_global, x0_LIP_sagittal_global(2,:))
+plot(t_global, AM_prediction_global(1,:))
 ylabel('L_y')
-ylim([-2 2])
+%ylim([-2 2])
 %xlim([0 25])
 hold off
 
 subplot(4,1,3)
 title('lateral')
 hold on
-plot(t_LIP_global, x0_LIP_lateral_global(1,:))
+plot(t_global, x0_LIP_lateral_global(1,:))
 ylabel('y_{sc}')
 %xlim([0 25])
 %ylim([-0.2 0.2])
 hold off
 subplot(4,1,4)
 hold on
-plot(t_LIP_global, x0_LIP_lateral_global(2,:))
+plot(t_global, x0_LIP_lateral_global(2,:))
+plot(t_global, AM_prediction_global(2,:))
 ylabel('L_x')
 %xlim([0 25])
 %ylim([-20 20])
@@ -130,3 +132,76 @@ ylabel('L_x')
 xlim([0 0.5])
 xlabel('time (s)')
 hold off
+%% data filter
+[t_global_filtered, V_global_filtered, ...
+    contact_indictor_global_filtered,...
+    AM_prediction_global_filtered, x0_LIP_sagittal_global_filtered, ...
+    x0_LIP_lateral_global_filtered, AM_COM_global_filtered] = Tool.backwardDataOut();
+%% Lyapunov
+[V_global_filtered_clean, outlier_indices ]= rmoutliers(V_global_filtered);
+t_global_filtered_clean = t_global_filtered(~outlier_indices);
+contact_indictor_global_filtered_clean = contact_indictor_global_filtered(~outlier_indices);
+plot(t_global_filtered_clean, (V_global_filtered_clean))
+Tool.domainIndicator(contact_indictor_global_filtered_clean,t_global_filtered_clean,min(V_global_filtered_clean),max(V_global_filtered_clean))
+xlabel('time (s)')
+ylabel('V')
+%% AM prediction
+load ../ALIP_analytical_solution_test/ALIP_DRS_caseA.mat
+figure
+subplot(4,1,1)
+title('sagittal')
+hold on
+plot(t_global_filtered, x0_LIP_sagittal_global_filtered(1,:))
+plot(t_vec_analytical,ALIP_analytical_vec(1,:))
+plot(t_yuan_abs_seq ,xt_yuan_seq(:,1))
+ylabel('x_{sc}')
+%xlim([0 25])
+%ylim([-0.02 0.02])
+legend('full-order','ALIP', 'MuJoCo')
+hold off
+subplot(4,1,2)
+hold on
+h1 = plot(t_global_filtered, x0_LIP_sagittal_global_filtered(2,:));
+h2 = plot(t_vec_analytical,ALIP_analytical_vec(2,:));
+h3 = plot(t_yuan_abs_seq ,xt_yuan_seq(:,2));
+h4 = plot(t_global_filtered, AM_prediction_global_filtered(1,:));
+ylabel('L_y')
+%legend('show', 'Location', 'best', 'AutoUpdate', 'off', 'Items', 1:3)
+
+%ylim([-2 2])
+%xlim([0 25])
+Tool.domainIndicator(contact_indictor_global_filtered,t_global_filtered,...
+    min(AM_prediction_global_filtered(1,:)),max(AM_prediction_global_filtered(1,:)))
+legend([h1,h2,h3,h4],'full-order','ALIP','MuJoCo','AM prediction')
+hold off
+
+
+subplot(4,1,3)
+title('lateral')
+hold on
+plot(t_global_filtered, x0_LIP_lateral_global_filtered(1,:))
+plot(t_vec_analytical,ALIP_analytical_vec(3,:))
+plot(t_yuan_abs_seq ,yt_yuan_seq(:,1))
+ylabel('y_{sc}')
+%xlim([0 25])
+%ylim([-0.2 0.2])
+hold off
+subplot(4,1,4)
+hold on
+plot(t_global_filtered, x0_LIP_lateral_global_filtered(2,:))
+plot(t_vec_analytical,ALIP_analytical_vec(4,:))
+plot(t_global_filtered, AM_prediction_global_filtered(2,:))
+plot(t_yuan_abs_seq ,yt_yuan_seq(:,2))
+ylabel('L_x')
+%xlim([0 25])
+%ylim([-20 20])
+xlabel('time (s)')
+
+Tool.domainIndicator(contact_indictor_global_filtered,t_global_filtered,...
+    min(AM_prediction_global_filtered(2,:)),max(AM_prediction_global_filtered(2,:)))
+hold off
+%% load MuJoCo
+t_yuan_abs_seq = readmatrix("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/TRO2023/DRS_int/caseA/t_yuan_abs_seq.csv");
+xt_yuan_seq = readmatrix("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/TRO2023/DRS_int/caseA/xt_yuan_seq.csv");
+yt_yuan_seq = readmatrix("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/TRO2023/DRS_int/caseA/yt_yuan_seq.csv");
+plot(t_yuan_abs_seq ,xt_yuan_seq )

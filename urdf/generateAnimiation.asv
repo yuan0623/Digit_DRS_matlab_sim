@@ -1,0 +1,41 @@
+function generateAnimiation(robot,x_sol,t_vec,LIP_para)
+    robot_config = homeConfiguration(robot);
+
+    x = [-1 1 1 -1];
+    y = [-1 -1 1 1];
+    z = [1 1 1 1]*-0.08;
+    for i=1:2:length(x_sol(:,1))
+        q = x_sol(i,1:30);
+        t = t_vec()
+        q_config = assign_each_joint(q);
+        for j=1:length(q)
+            robot_config(j).JointPosition = q_config(j);
+        end
+        %hold on
+        show(robot,robot_config,'Frames', 'off','PreservePlot', false);
+        %show(robot,robot_config);
+        %view([44,22])
+        terrain = patch(x,y,z,'red');
+        drawnow
+        delete(terrain)
+
+        %hold off
+        i
+    end
+    
+    
+
+
+end
+
+function q_config = assign_each_joint(q)
+    q_config = zeros(length(q),1);
+    q_config(1:6) = q(1:6);
+    q_config(7:14) = q(7:14);
+    q_config(15:22) = q(19:26);
+    q_config(23:26) = q(15:18);
+    q_config(27:30) = q(27:30);
+
+
+
+end

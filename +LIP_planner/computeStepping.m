@@ -6,7 +6,7 @@ function [px_sp2sw, py_sp2sw] = computeStepping(p_sp2CoM, Ly_est, Lx_est, foot_i
 
     px_sp2sw = px_sp2CoM - px_sw2CoM;
     py_sp2sw = py_sp2CoM - py_sw2CoM;
-    %py_sp2sw = LIP_planner.regulate_lateral_step(foot_index,py_sp2sw);
+    py_sp2sw = LIP_planner.regulate_lateral_step(foot_index,py_sp2sw);
 
 
 

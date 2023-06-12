@@ -8,7 +8,8 @@ function dq_plus=resetmap(x,foot_index,LIP_para)
     elseif foot_index == 1
         hol_ctr_jacobian = numeric_jacobian(@hol_ctr.right_holonomic_constraint,q);
     end
-    [~,v_DRS,~] = dynamics.platform_motion(t_global(end),LIP_para.noninitial.T_DRS);
+    [~,v_DRS,~] = dynamics.platform_motion(t_global(end),LIP_para.noninitial.T_DRS_x,...
+        LIP_para.noninitial.T_DRS_y,LIP_para.noninitial.amplitude_x,LIP_para.noninitial.amplitude_y);
     b=[D*dq';v_DRS];
     A=[D,-hol_ctr_jacobian';
        hol_ctr_jacobian,zeros(10,10)];

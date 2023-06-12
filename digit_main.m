@@ -32,7 +32,7 @@ tic
 global y_global dy_global t_global global_position_reference Alpha t_LIP_global...
     x0_LIP_sagittal_global x0_LIP_lateral_global x_global u_saittal_global u_lateral_global...
     hc_global hd_global arm_pose_global Fr_global step_count DRS_pos_global DRS_int_global_tT DRS_int_global_TT...
-    V_global
+    V_global contact_indictor_global AM_prediction_global AM_COM_global
 tspan=[0 0.95];
 addpath('gen')
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
@@ -44,23 +44,34 @@ foot_index = 1;
 
 %% 
 %%%%%
-LIP_para.initial.T = 0.4/2;
+
+v_des = 0.0;
+T_DRS_x = 0.4;
+T_DRS_y = 0.72; 
+amplitude_x = 0.0;
+amplitude_y = 0.06;
+
+LIP_para.initial.T = 0.4;
 LIP_para.initial.m = 46.51;
 LIP_para.initial.H = 0.9;
 LIP_para.initial.W = 0.2;
 LIP_para.initial.g = 9.81;
-LIP_para.initial.v_des = 0;
-LIP_para.initial.T_DRS_x = LIP_para.initial.T*1;
-LIP_para.initial.T_DRS_y = LIP_para.initial.T*1;
+LIP_para.initial.v_des = v_des;
+LIP_para.initial.T_DRS_x = T_DRS_x;
+LIP_para.initial.T_DRS_y = T_DRS_y;
+LIP_para.initial.amplitude_x = amplitude_x;
+LIP_para.initial.amplitude_y = amplitude_y;
 
 LIP_para.noninitial.T = 0.4;
 LIP_para.noninitial.m = 46.51;
 LIP_para.noninitial.H = 0.9;
 LIP_para.noninitial.W = 0.2;
 LIP_para.noninitial.g = 9.81;
-LIP_para.noninitial.v_des = 0;
-LIP_para.noninitial.T_DRS_x = LIP_para.initial.T*1;
-LIP_para.noninitial.T_DRS_y = LIP_para.initial.T*1;
+LIP_para.noninitial.v_des = v_des;
+LIP_para.noninitial.T_DRS_x = T_DRS_x;
+LIP_para.noninitial.T_DRS_y = T_DRS_y;
+LIP_para.noninitial.amplitude_x = amplitude_x;
+LIP_para.noninitial.amplitude_y = amplitude_y;
 %q0=Tool.GetStartingPose(LIP_para.noninitial,foot_index);
 %Tool.visualize_IC(q0)
 %x0=Tool.LIP2DigitFullModel(LIP_para.noninitial,foot_index);
@@ -77,7 +88,8 @@ q0 = [0.0328437,  -0.01727862,  0.97535971,  0.00576163,  0.00426058,  0.0040503
 
 
 dq0 = zeros(30,1);
-[p_DRS,v_DRS,a_DRS] = dynamics.platform_motion(0,LIP_para.noninitial.T );
+[p_DRS,v_DRS,a_DRS] = dynamics.platform_motion(0,LIP_para.noninitial.T_DRS_x, LIP_para.noninitial.T_DRS_y,...
+    LIP_para.noninitial.amplitude_x,LIP_para.noninitial.amplitude_y);
 dq0(2) = v_DRS(2);
 
 
@@ -128,9 +140,10 @@ x_sol=[];
 
 t_global=[];
 global_position_reference=[];
-
+contact_indictor_global = [];
 x0_LIP_sagittal_global = [];
 x0_LIP_lateral_global = [];
+AM_COM_global = [];
 t_LIP_global = [];
 x_global = [];
 u_saittal_global = [];
@@ -141,6 +154,7 @@ Fr_global = [];
 DRS_pos_global = [];
 DRS_int_global_tT = [];
 DRS_int_global_TT = [];
+AM_prediction_global = [];
 V_global = [];
 step=20;
 t_end_of_previous_step=0;
@@ -216,7 +230,7 @@ for i=1:step
 end
 
 %% generate the animation
-floating_base_animation2(t,x_sol,1,"digit_UA_type2_planner_DRS_v2")
+ floating_base_animation2(t,x_sol,1,"digit_UA_type2_planner_DRS_v2")
 %rmpath('gen')
 %% generate the tracking results
 figure

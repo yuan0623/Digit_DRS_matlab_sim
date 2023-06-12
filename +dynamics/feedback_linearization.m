@@ -2,7 +2,8 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     B_overall,foot_index,t_end_of_previous_step,LIP_para,current_stance_foot_position,...
     t_end_desired)
     global Alpha t_global t_LIP_global x0_LIP_sagittal_global x0_LIP_lateral_global...
-        u_saittal_global u_lateral_global hc_global hd_global arm_pose_global step_count V_global
+        u_saittal_global u_lateral_global hc_global hd_global arm_pose_global step_count V_global...
+        AM_prediction_global AM_COM_global
     persistent t_previous
     if step_count == 1
         LIP_para = LIP_para.initial;
@@ -60,8 +61,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
         %    u_lateral = u_lateral_min;
         %end
         
-        x0_LIP_sagittal_global = [x0_LIP_sagittal_global,x0_LIPSagittal];
-        x0_LIP_lateral_global = [x0_LIP_lateral_global,y0_LIPLateral];
+        
         t_LIP_global = [t_LIP_global,t_global(end)];
         u_saittal_global = [u_saittal_global,u_sagittal];
         u_lateral_global = [u_lateral_global,u_lateral];
@@ -92,8 +92,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
             %end
             
             
-            x0_LIP_sagittal_global = [x0_LIP_sagittal_global,x0_LIPSagittal];
-            x0_LIP_lateral_global = [x0_LIP_lateral_global,y0_LIPLateral];
+
             t_LIP_global = [t_LIP_global,t_global(end)];
             u_saittal_global = [u_saittal_global,u_sagittal];
             u_lateral_global = [u_lateral_global,u_lateral];
@@ -109,6 +108,10 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
         end
     end
     %%
+    p_com = p_COM_func(q);
+    AM_COM = AMworld_about_pA_func(q,dq,p_com);
+    AM_COM_global = [AM_COM_global,AM_COM];
+
     T = LIP_para.T;
     theta = t_;
     dtheta = 1;
@@ -154,8 +157,10 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     P = lyap(A,Q);
     V_h = X_h'*P*X_h;
     beta = 0.001;
+    x0_LIPSagittal = Tool.FOM2LIPSagittal(x,t_,foot_index);
+    y0_LIPLateral = Tool.FOM2LIPLateral(x,t_,foot_index);
     X_eta = [x0_LIPSagittal(1:2);y0_LIPLateral(1:2)];
-    V_eta = beta*X_eta'*X_eta;
+    V_eta = beta*(X_eta'*X_eta);
     V = V_h+V_eta;
 
 
@@ -167,6 +172,11 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     hc_global = [hc_global,hc];
     hd_global = [hd_global,hd];
     V_global = [V_global,V];
+    x0_LIP_sagittal_global = [x0_LIP_sagittal_global,x0_LIPSagittal];
+    x0_LIP_lateral_global = [x0_LIP_lateral_global,y0_LIPLateral];
+    [Ly_est,Lx_est] = LIP_planner.AMprediction(x0_LIPSagittal, y0_LIPLateral,t,t_end_desired,LIP_para);
+
+    AM_prediction_global = [AM_prediction_global, [Ly_est;Lx_est]];
 end  
 
 
