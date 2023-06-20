@@ -1,12 +1,14 @@
-function [M,c,B] = dynamic_matrix_digit(x,foot_index)
+function [M,c,B] = dynamic_matrix_digit(x,digit_robot,foot_index)
     q = x(1:30);
     dq = x(31:60);
-    M = zeros(30,30);
-    for i = 1:26
-       file_name = "Mmat"+string(i)+"_digit(q)"; 
-       M = M+eval(file_name); 
-    end
-    c = -Ge_vec_digit(q,dq);
+    %M = zeros(30,30);
+    M = digit_robot.calcMassMatrix(q);
+    %for i = 1:26
+    %   file_name = "Mmat"+string(i)+"_digit(q)"; 
+    %   M = M+eval(file_name); 
+    %end
+    c = digit_robot.calcDriftVector(q,dq);
+    %c = -Ge_vec_digit(q,dq);
     %% full actuation
     
     B =    [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;

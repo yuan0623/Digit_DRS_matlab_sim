@@ -1,8 +1,8 @@
-function dq_plus=resetmap(x,foot_index,LIP_para)
+function dq_plus=resetmap(x,foot_index,LIP_para,digit_robot)
     global t_global
     q=x(1:30);
     dq=x(31:60);
-    [D,~,~] = dynamics.dynamic_matrix_digit(x,foot_index);
+    [D,~,~] = dynamics.dynamic_matrix_digit(x,digit_robot,foot_index);
     if foot_index == -1
         hol_ctr_jacobian = numeric_jacobian(@hol_ctr.left_holonomic_constraint,q);
     elseif foot_index == 1

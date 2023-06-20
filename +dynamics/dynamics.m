@@ -1,8 +1,8 @@
-function dx = dynamics(t,x,foot_index,current_stance_foot_position,t_end_of_previous_step,LIP_para,t_end_desired)
+function dx = dynamics(t,x,foot_index,current_stance_foot_position,t_end_of_previous_step,LIP_para,t_end_desired,digit_robot)
     global t_global x_global Fr_global DRS_pos_global contact_indictor_global
     t_global=[t_global;t+t_end_of_previous_step];
     %global Fr COP
-    [D,c_vec,B] = dynamics.dynamic_matrix_digit(x,foot_index);
+    [D,c_vec,B] = dynamics.dynamic_matrix_digit(x,digit_robot,foot_index);
     q = x(1:30);
     dq = x(31:60);
     if foot_index == -1 % right foot as stance foot

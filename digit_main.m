@@ -36,6 +36,9 @@ global y_global dy_global t_global global_position_reference Alpha t_LIP_global.
     V_h_global V_eta_global
 tspan=[0 0.95];
 addpath('gen')
+addpath('gen_v2')
+digit_robot = RobotLinks('digit_model.urdf','floating');
+%Tool.export_digit(digit_robot);
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
 % set the intitial condition.
 %load initial_pose.mat
@@ -109,11 +112,11 @@ q0(3) = q0(3) - current_stance_foot_position(3);
 x0 = [q0;dq0];
 x0(15) = 0.4;
 x0(16) = 1;
-x0(17) = 0.2;
+%x0(17) = 0.2;
 x0(18) = -1;
 x0(27) = -0.4;
 x0(28) = -1;
-x0(29) = -0.2;
+%x0(29) = -0.2;
 x0(30) = 1;
 arm_pose_global = [x0(15:18);x0(27:30)];
 Alpha1_R_FD = [1 1 1 1 1 1 1]*LIP_para.noninitial.H;
@@ -183,7 +186,7 @@ for i=1:step
     options=odeset('Events',@(t,x) dynamics.switch_events(t,x,foot_index));
 
     [t_each_step,x_each_step,te,xe,ie]=ode45(@(t,x) dynamics.dynamics(t,x,...
-        foot_index,current_stance_foot_position,t_end_of_previous_step,LIP_para,t_end_desired),tspan,x0,options);
+        foot_index,current_stance_foot_position,t_end_of_previous_step,LIP_para,t_end_desired,digit_robot),tspan,x0,options);
  
     if isempty(t)
         
@@ -203,7 +206,7 @@ for i=1:step
     end
     %%
     xe_vec(i,:)= xe(1:30)';
-    dq_plus=dynamics.resetmap(x_each_step(end,:),foot_index,LIP_para);
+    dq_plus=dynamics.resetmap(x_each_step(end,:),foot_index,LIP_para,digit_robot);
     x0=[x_each_step(end,1:30)';dq_plus];
     
     if step_count == 1
