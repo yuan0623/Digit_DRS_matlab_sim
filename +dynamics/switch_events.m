@@ -7,7 +7,7 @@ function [value,isterminal,direction] = switch_events(t,x,foot_index)
         swing_foot_pose = forward_kinematics.digit_right_foot_pose(q);
     end
 
-    if t>0.02
+    if t>0.09
         value = swing_foot_pose(3);
         
     else

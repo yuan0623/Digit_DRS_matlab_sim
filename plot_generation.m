@@ -146,53 +146,62 @@ Tool.domainIndicator(contact_indictor_global_filtered_clean,t_global_filtered_cl
 xlabel('time (s)')
 ylabel('V')
 %% AM prediction
-load ../ALIP_analytical_solution_test/ALIP_DRS_caseA.mat
+load ../ALIP_analytical_solution_test/ALIP_DRS_caseC.mat
 figure
 subplot(4,1,1)
 title('sagittal')
 hold on
 plot(t_global_filtered, x0_LIP_sagittal_global_filtered(1,:))
 plot(t_vec_analytical,ALIP_analytical_vec(1,:))
-plot(t_yuan_abs_seq ,xt_yuan_seq(:,1))
+%plot(t_yuan_abs_seq ,xt_yuan_seq(:,1))
 ylabel('x_{sc}')
-%xlim([0 25])
-%ylim([-0.02 0.02])
+xlim([0 8])
+ylim([-0.1 0.1])
 legend('full-order','ALIP', 'MuJoCo')
 hold off
 subplot(4,1,2)
+title('lateral')
+hold on
+plot(t_global_filtered, x0_LIP_lateral_global_filtered(1,:))
+plot(t_vec_analytical,ALIP_analytical_vec(3,:))
+%plot(t_yuan_abs_seq ,yt_yuan_seq(:,1))
+ylabel('y_{sc}')
+xlim([0 8])
+ylim([-0.25 0.25])
+%xlim([0 25])
+%ylim([-0.2 0.2])
+hold off
+
+
+subplot(4,1,3)
+
+
+
+
 hold on
 h1 = plot(t_global_filtered, x0_LIP_sagittal_global_filtered(2,:));
 h2 = plot(t_vec_analytical,ALIP_analytical_vec(2,:));
-h3 = plot(t_yuan_abs_seq ,xt_yuan_seq(:,2));
+%h3 = plot(t_yuan_abs_seq ,xt_yuan_seq(:,2));
 h4 = plot(t_global_filtered, AM_prediction_global_filtered(1,:));
 ylabel('L_y')
+xlim([0 8])
+
 %legend('show', 'Location', 'best', 'AutoUpdate', 'off', 'Items', 1:3)
 
 %ylim([-2 2])
 %xlim([0 25])
 Tool.domainIndicator(contact_indictor_global_filtered,t_global_filtered,...
     min(AM_prediction_global_filtered(1,:)),max(AM_prediction_global_filtered(1,:)))
-legend([h1,h2,h3,h4],'full-order','ALIP','MuJoCo','AM prediction')
-hold off
-
-
-subplot(4,1,3)
-title('lateral')
-hold on
-plot(t_global_filtered, x0_LIP_lateral_global_filtered(1,:))
-plot(t_vec_analytical,ALIP_analytical_vec(3,:))
-plot(t_yuan_abs_seq ,yt_yuan_seq(:,1))
-ylabel('y_{sc}')
-%xlim([0 25])
-%ylim([-0.2 0.2])
+legend([h1,h2,h4],'full-order','ALIP','AM prediction')
 hold off
 subplot(4,1,4)
 hold on
 plot(t_global_filtered, x0_LIP_lateral_global_filtered(2,:))
 plot(t_vec_analytical,ALIP_analytical_vec(4,:))
 plot(t_global_filtered, AM_prediction_global_filtered(2,:))
-plot(t_yuan_abs_seq ,yt_yuan_seq(:,2))
+%plot(t_yuan_abs_seq ,yt_yuan_seq(:,2))
 ylabel('L_x')
+xlim([0 8])
 %xlim([0 25])
 %ylim([-20 20])
 xlabel('time (s)')
@@ -205,3 +214,15 @@ t_yuan_abs_seq = readmatrix("~/Dropbox/UML_dropbox/research/conferenceNjournal_p
 xt_yuan_seq = readmatrix("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/TRO2023/DRS_int/caseA/xt_yuan_seq.csv");
 yt_yuan_seq = readmatrix("~/Dropbox/UML_dropbox/research/conferenceNjournal_paper/under_actuated_robot_DRS/fromGitHub/digit_mujoco_gym/TRO2023/DRS_int/caseA/yt_yuan_seq.csv");
 plot(t_yuan_abs_seq ,xt_yuan_seq )
+%% plot base orientation
+subplot(2,1,1)
+
+plot(t,x_sol(:,4))
+ylabel('rad')
+title('roll')
+subplot(2,1,2)
+
+plot(t,x_sol(:,5))
+ylabel('rad')
+title('pitch')
+xlabel('time (s)')

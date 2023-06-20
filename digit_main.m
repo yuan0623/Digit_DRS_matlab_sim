@@ -32,7 +32,8 @@ tic
 global y_global dy_global t_global global_position_reference Alpha t_LIP_global...
     x0_LIP_sagittal_global x0_LIP_lateral_global x_global u_saittal_global u_lateral_global...
     hc_global hd_global arm_pose_global Fr_global step_count DRS_pos_global DRS_int_global_tT DRS_int_global_TT...
-    V_global contact_indictor_global AM_prediction_global AM_COM_global
+    V_global contact_indictor_global AM_prediction_global AM_COM_global u_torque_global ...
+    V_h_global V_eta_global
 tspan=[0 0.95];
 addpath('gen')
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
@@ -106,6 +107,14 @@ end
 
 q0(3) = q0(3) - current_stance_foot_position(3);
 x0 = [q0;dq0];
+x0(15) = 0.4;
+x0(16) = 1;
+x0(17) = 0.2;
+x0(18) = -1;
+x0(27) = -0.4;
+x0(28) = -1;
+x0(29) = -0.2;
+x0(30) = 1;
 arm_pose_global = [x0(15:18);x0(27:30)];
 Alpha1_R_FD = [1 1 1 1 1 1 1]*LIP_para.noninitial.H;
 Alpha2_R_FD = [0,0,0,0,0,0,0];
@@ -147,6 +156,7 @@ AM_COM_global = [];
 t_LIP_global = [];
 x_global = [];
 u_saittal_global = [];
+u_torque_global = [];
 u_lateral_global = [];
 hc_global = [];
 hd_global = [];
@@ -156,6 +166,8 @@ DRS_int_global_tT = [];
 DRS_int_global_TT = [];
 AM_prediction_global = [];
 V_global = [];
+V_h_global = [];
+V_eta_global = [];
 step=20;
 t_end_of_previous_step=0;
 
@@ -230,7 +242,7 @@ for i=1:step
 end
 
 %% generate the animation
- floating_base_animation2(t,x_sol,1,"digit_UA_type2_planner_DRS_v2")
+ floating_base_animation2(t,x_sol,0,"digit_UA_type2_planner_DRS_v2")
 %rmpath('gen')
 %% generate the tracking results
 figure

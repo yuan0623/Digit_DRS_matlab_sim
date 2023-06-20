@@ -34,8 +34,9 @@ function [Cost,Cnst] = HLIP_ObjectiveAndConstraints(sagital_LIP,lateral_LIP,foot
     %% cost function
     function J = obj(x0)
 
-        J=x0(31:60)'*x0(31:60)+...
-            (x0(1:30)'-zeros(1,30))*(x0(1:30)-zeros(30,1));
+        J=3;
+        %x0(31:60)'*x0(31:60)+...
+        %    (x0(1:30)'-zeros(1,30))*(x0(1:30)-zeros(30,1));
 
     end
 
@@ -77,7 +78,7 @@ function [Cost,Cnst] = HLIP_ObjectiveAndConstraints(sagital_LIP,lateral_LIP,foot
         ceq4 = sagital_LIP.x0(2) - AM_sagittal;
         %ceq3 = [];
         %ceq4 = [];
-        %% support foot has zero velocity
+        %% support foot has same velocity as the DRS
         [x_DRS,v_DRS,a_DRS] = dynamics.platform_motion(0,lateral_LIP.T);
         ceq5 = j_c*dq0-v_DRS;
         %% suppot foot height is zero and flat

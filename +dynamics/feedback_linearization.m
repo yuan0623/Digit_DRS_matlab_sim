@@ -3,7 +3,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     t_end_desired)
     global Alpha t_global t_LIP_global x0_LIP_sagittal_global x0_LIP_lateral_global...
         u_saittal_global u_lateral_global hc_global hd_global arm_pose_global step_count V_global...
-        AM_prediction_global AM_COM_global
+        AM_prediction_global AM_COM_global u_torque_global V_h_global V_eta_global
     persistent t_previous
     if step_count == 1
         LIP_para = LIP_para.initial;
@@ -156,7 +156,7 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     Q = eye(36);
     P = lyap(A,Q);
     V_h = X_h'*P*X_h;
-    beta = 0.001;
+    beta = 0.01;
     x0_LIPSagittal = Tool.FOM2LIPSagittal(x,t_,foot_index);
     y0_LIPLateral = Tool.FOM2LIPLateral(x,t_,foot_index);
     X_eta = [x0_LIPSagittal(1:2);y0_LIPLateral(1:2)];
@@ -168,10 +168,14 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
     % check equ. (15)
     %u=(j_hc/(D)*B_overall)\(v+j_hc/(D)*c_overall-jj_hc+ddhd);
     u=(j_hc/(D)*B_overall)\(v+j_hc/(D)*c_overall-jj_hc+ddhd);
-    
+
+
+    u_torque_global = [u_torque_global,u];
     hc_global = [hc_global,hc];
     hd_global = [hd_global,hd];
     V_global = [V_global,V];
+    V_h_global = [V_h_global,V_h];
+    V_eta_global = [V_eta_global, V_eta];
     x0_LIP_sagittal_global = [x0_LIP_sagittal_global,x0_LIPSagittal];
     x0_LIP_lateral_global = [x0_LIP_lateral_global,y0_LIPLateral];
     [Ly_est,Lx_est] = LIP_planner.AMprediction(x0_LIPSagittal, y0_LIPLateral,t,t_end_desired,LIP_para);

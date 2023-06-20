@@ -14,7 +14,7 @@ function [t_global_filtered, V_global_filtered, ...
 
     i = 2;
     while i<length(t_global_filtered)
-        if t_global_filtered(i)<=t_global_filtered(i-1)+0.0001
+        if t_global_filtered(i)<=t_global_filtered(i-1)
             t_global_filtered(i) = [];
             V_global_filtered(i) = [];
             contact_indictor_global_filtered(i) = [];
