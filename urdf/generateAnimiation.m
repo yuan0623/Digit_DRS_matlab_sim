@@ -24,22 +24,24 @@ function generateAnimiation(robot,x_sol,t_vec,LIP_para,want_record,name)
         t = t_vec(i);
         if t-t_0>5.0000e-03
             t_0 = t;
-            q = x_sol(i,1:30);        
-            x = [-1 1 1 -1]+amplitude_x *cos(2*pi/T_DRS_x*t)-amplitude_x ;
-            y = [-1 -1 1 1]+amplitude_y *cos(2*pi/T_DRS_y*t)-amplitude_y;
+            q = x_sol(i,1:30);
+            DRS_x = amplitude_x *cos(2*pi/T_DRS_x*t)-amplitude_x;
+            DRS_y = amplitude_y *cos(2*pi/T_DRS_y*t)-amplitude_y;
+            x = [-1 3 3 -1]+DRS_x ;
+            y = [-1 -1 1 1]+DRS_y;
             q_config = assign_each_joint(q);
             for j=1:length(q)
                 robot_config(j).JointPosition = q_config(j);
             end
             %hold on
             show(robot,robot_config,'Frames', 'off','PreservePlot', false);
-            xlim([-1.5+q(1), 1.5+q(1)]);
+            xlim([-1.5+DRS_x, 3+DRS_x]);
             zlim([-0.1,1.8]);
-            ylim([-1.5+q(2), 1.5+q(2)]);
+            ylim([-1.5+DRS_y, 1.5+DRS_y]);
             set(gca,'XTickLabel',[]);
             set(gca,'YTickLabel',[]);
             set(gca,'ZTickLabel',[]);
-            set(gcf, 'Position', [10 10 1840 944]);
+            set(gcf, 'Position', [10 10 1848 944]);
             % Get rid of tool bar and pulldown menus that are along top of figure.
             set(gcf, 'Toolbar', 'none', 'Menu', 'none');
             %show(robot,robot_config);
