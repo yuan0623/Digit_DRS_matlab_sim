@@ -150,8 +150,8 @@ function [u]=feedback_linearization(t,x,D,c_overall,...
 
     t;
     % make sure that Kp = (Kd/2)^2
-    Kp=50^2*eye(18,18);
-    Kd=100*eye(18,18);
+    Kp=27^2*eye(18,18);
+    Kd=54*eye(18,18);
     A = [zeros(18,18),eye(18);-Kp, -Kd];
     Q = eye(36);
     P = lyap(A,Q);
