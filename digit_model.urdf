@@ -202,7 +202,7 @@
   <link name="left_elbow">
     <inertial>
       <origin rpy="0 0 0" xyz="0.107996 -0.000521 -0.017765"/>
-      <mass value="5.550582"/>
+      <mass value="1.050582"/>
       <inertia ixx="0.000476" ixy="2.9e-05" ixz="0.001403" iyy="0.009564" iyz="1.5e-05" izz="-9e-06"/>
     </inertial>
     <visual>
@@ -394,7 +394,7 @@
   <link name="right_elbow">
     <inertial>
       <origin rpy="0 0 0" xyz="0.107996 0.000521 -0.017765"/>
-      <mass value="5.550582"/>
+      <mass value="1.050582"/>
       <inertia ixx="0.000476" ixy="-2.9e-05" ixz="0.001403" iyy="0.009564" iyz="-1.5e-05" izz="-9e-06"/>
     </inertial>
     <visual>

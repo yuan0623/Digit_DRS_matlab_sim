@@ -35,10 +35,10 @@ global y_global dy_global t_global global_position_reference Alpha t_LIP_global.
     V_global contact_indictor_global AM_prediction_global AM_COM_global u_torque_global ...
     V_h_global V_eta_global
 tspan=[0 0.95];
-addpath('gen')
-addpath('gen_v2')
+%addpath('gen')
+addpath('gen_1kg')
 digit_robot = RobotLinks('digit_model.urdf','floating');
-%Tool.export_digit(digit_robot);
+%Tool.export_digit(digit_robot,'gen_1kg');
 %addpath("~/Dropbox/UML_dropbox/Matlab_third_party_package")
 % set the intitial condition.
 %load initial_pose.mat
@@ -49,7 +49,7 @@ foot_index = 1;
 %% 
 %%%%%
 
-v_des = 0.0;
+v_des = 0.3;
 T_DRS_x = 0.4;
 T_DRS_y = 0.72; 
 amplitude_x = 0.0;
@@ -245,7 +245,7 @@ for i=1:step
 end
 
 %% generate the animation
- floating_base_animation2(t,x_sol,0,"digit_UA_type2_planner_DRS_v2")
+floating_base_animation2(t,x_sol,0,"digit_UA_type2_planner_DRS_v2")
 %rmpath('gen')
 %% generate the tracking results
 figure

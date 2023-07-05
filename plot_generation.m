@@ -146,7 +146,7 @@ Tool.domainIndicator(contact_indictor_global_filtered_clean,t_global_filtered_cl
 xlabel('time (s)')
 ylabel('V')
 %% AM prediction
-load ../ALIP_analytical_solution_test/ALIP_DRS_caseC.mat
+load ../ALIP_analytical_solution_test/ALIP_DRS_caseC_1kg_known.mat
 figure
 subplot(4,1,1)
 title('sagittal')
@@ -155,7 +155,7 @@ plot(t_global_filtered, x0_LIP_sagittal_global_filtered(1,:))
 plot(t_vec_analytical,ALIP_analytical_vec(1,:))
 %plot(t_yuan_abs_seq ,xt_yuan_seq(:,1))
 ylabel('x_{sc}')
-xlim([0 1.7])
+xlim([0 1.9])
 ylim([-0.2 0.2])
 legend('full-order','ALIP', 'MuJoCo')
 hold off
@@ -166,7 +166,7 @@ plot(t_global_filtered, x0_LIP_lateral_global_filtered(1,:))
 plot(t_vec_analytical,ALIP_analytical_vec(3,:))
 %plot(t_yuan_abs_seq ,yt_yuan_seq(:,1))
 ylabel('y_{sc}')
-xlim([0 1.7])
+xlim([0 1.9])
 ylim([-0.8 0.8])
 %xlim([0 8])
 %ylim([-0.2 0.2])
@@ -175,16 +175,13 @@ hold off
 
 subplot(4,1,3)
 
-
-
-
 hold on
 h1 = plot(t_global_filtered, x0_LIP_sagittal_global_filtered(2,:));
 h2 = plot(t_vec_analytical,ALIP_analytical_vec(2,:));
 %h3 = plot(t_yuan_abs_seq ,xt_yuan_seq(:,2));
-h4 = plot(t_global_filtered, AM_prediction_global_filtered(1,:));
+%h4 = plot(t_global_filtered, AM_prediction_global_filtered(1,:));
 ylabel('L_y')
-xlim([0 1.7])
+xlim([0 1.9])
 
 %legend('show', 'Location', 'best', 'AutoUpdate', 'off', 'Items', 1:3)
 
@@ -192,7 +189,7 @@ xlim([0 1.7])
 %xlim([0 25])
 %Tool.domainIndicator(contact_indictor_global_filtered,t_global_filtered,...
 %    min(AM_prediction_global_filtered(1,:)),max(AM_prediction_global_filtered(1,:)))
-legend([h1,h2,h4],'full-order','ALIP','AM prediction')
+%legend([h1,h2,h4],'full-order','ALIP','AM prediction')
 hold off
 subplot(4,1,4)
 hold on
@@ -201,7 +198,7 @@ plot(t_vec_analytical,ALIP_analytical_vec(4,:))
 %plot(t_global_filtered, AM_prediction_global_filtered(2,:))
 %plot(t_yuan_abs_seq ,yt_yuan_seq(:,2))
 ylabel('L_x')
-xlim([0 1.7])
+xlim([0 1.9])
 %xlim([0 25])
 %ylim([-20 20])
 xlabel('time (s)')
