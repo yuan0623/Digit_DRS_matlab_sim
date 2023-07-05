@@ -18,20 +18,8 @@ function dx = dynamics(t,x,foot_index,current_stance_foot_position,t_end_of_prev
         LIP_para.noninitial.T_DRS_x,LIP_para.noninitial.T_DRS_y,LIP_para.noninitial.amplitude_x,...
         LIP_para.noninitial.amplitude_y);
     DRS_pos_global = [DRS_pos_global,p_DRS(2)];
-
-    %% external load on the hand
-    external_mass = 00;
-    load_l_hand = [0;0;-external_mass*9.81/2];
-    load_r_hand = [0;0;-external_mass*9.81/2];
-    J_l_hand = numeric_jacobian(@forward_kinematics.digit_base,q);
-    %J_r_hand = numeric_jacobian(@forward_kinematics.digit_right_hand_pose,q);
-    load_l = J_l_hand'*load_l_hand;
-    %load_r = J_r_hand'*load_r_hand;
-    
-    %load_l = zeros(30,1);
-    %load_r = zeros(30,1);
     %%
-    c_overall = c_vec - load_l  -j_c'/(j_c/D*j_c')*(j_c/D*c_vec-jj_c+a_DRS);
+    c_overall = c_vec - j_c'/(j_c/D*j_c')*(j_c/D*c_vec-jj_c+a_DRS);
     B_overall = B-j_c'/(j_c/D*j_c')*j_c/D*B;
     %digit_left_foot_pose(q)
     %digit_right_foot_pose(q)
