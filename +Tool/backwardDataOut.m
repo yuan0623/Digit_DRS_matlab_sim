@@ -21,7 +21,7 @@ function [t_global_filtered, V_global_filtered, ...
             AM_prediction_global_filtered(:,i) = [];
             x0_LIP_sagittal_global_filtered(:,i) = [];
             x0_LIP_lateral_global_filtered(:,i) = [];
-            AM_COM_global_filtered(:,i) = [];
+            %AM_COM_global_filtered(:,i) = [];
         else 
            i = i+1
         end

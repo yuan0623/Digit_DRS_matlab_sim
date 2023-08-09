@@ -138,16 +138,20 @@ hold off
     AM_prediction_global_filtered, x0_LIP_sagittal_global_filtered, ...
     x0_LIP_lateral_global_filtered, AM_COM_global_filtered] = Tool.backwardDataOut();
 %% Lyapunov
-plot(t_global_filtered, V_global_filtered)
-Tool.domainIndicator(contact_indictor_global_filtered,t_global_filtered, min(V_global_filtered),max(V_global_filtered))
-ylim([0 5])
-xlim([0 5])
+%plot(t_global_filtered, V_global_filtered)
+%Tool.domainIndicator(contact_indictor_global_filtered,t_global_filtered, min(V_global_filtered),max(V_global_filtered))
+%ylim([0 5])
+%xlim([0 5])
 
 [V_global_filtered_clean, outlier_indices ]= rmoutliers(V_global_filtered);
 t_global_filtered_clean = t_global_filtered(~outlier_indices);
 contact_indictor_global_filtered_clean = contact_indictor_global_filtered(~outlier_indices);
-plot(t_global_filtered_clean, (V_global_filtered_clean))
-Tool.domainIndicator(contact_indictor_global_filtered_clean,t_global_filtered_clean,min(V_global_filtered_clean),max(V_global_filtered_clean))
+V_global_filtered_smoothed = Tool.piecewise_smooth(V_global_filtered_clean, contact_indictor_global_filtered_clean);
+%[V_global_filtered_clean, outlier_indices ]= rmoutliers(V_global_filtered_clean);
+%t_global_filtered_clean = t_global_filtered_clean(~outlier_indices);
+%contact_indictor_global_filtered_clean = contact_indictor_global_filtered_clean(~outlier_indices);
+plot(t_global_filtered_clean, (V_global_filtered_smoothed))
+Tool.domainIndicator(contact_indictor_global_filtered,t_global_filtered,min(V_global_filtered_clean),max(V_global_filtered_clean))
 xlabel('time (s)')
 ylabel('V')
 %% AM prediction
