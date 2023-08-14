@@ -24,7 +24,7 @@ function [sum_lateral, sum_sagittal] = DRS_motion_int(T_low,T_high,LIP_para)
 
     end
     
-    %sum_sagittal = zeros(2,1);
-    %sum_lateral = zeros(2,1);
+    sum_sagittal = zeros(2,1);
+    sum_lateral = zeros(2,1);
     
 end

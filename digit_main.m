@@ -46,11 +46,11 @@ foot_index = 1;
 %% 
 %%%%%
 
-v_des = 0.0;
+v_des = 0.15;
 T_DRS_x = 0.4;
-T_DRS_y = 0.72; 
-amplitude_x = 0.0;
-amplitude_y = 0.06;
+T_DRS_y = 6; 
+amplitude_x = 0.04;
+amplitude_y = 0.1;
 
 LIP_para.initial.T = 0.4;
 LIP_para.initial.m = 46.51;
